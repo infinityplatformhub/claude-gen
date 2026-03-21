@@ -122,7 +122,7 @@
       "description": "Python Django backend",
       "skills": ["python-pro", "django-expert", "migration-database",
                  "docker", "git-advanced", "debugging", "security-audit"],
-      "rules": ["python-fastapi.md"]
+      "rules": ["python-django.md"]
     },
     "php-laravel": {
       "description": "PHP Laravel full-stack",

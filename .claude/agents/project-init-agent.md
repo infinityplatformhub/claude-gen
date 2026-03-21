@@ -137,7 +137,11 @@ Write to: `.claude/skills/{name}/SKILL.md`
 
 Write these WITHOUT permission prompt (outside .claude/):
 
+**IMPORTANT: If .ctx/ files already exist, MERGE — do not overwrite.**
+
 ### .ctx/active-tasks.md
+- **If exists**: read existing content. Preserve any active tasks. Add framework header if missing.
+- **If not exists**: create fresh:
 ```markdown
 # Active Tasks — {project name}
 > Current WIP. Max 5 active tasks.
@@ -152,6 +156,8 @@ None
 ```
 
 ### .ctx/recent-changes.md
+- **If exists**: keep existing entries. Append git history below if useful.
+- **If not exists**: create fresh:
 ```markdown
 # Recent Changes — {project name}
 > Last completed tasks. Older entries → docs/CHANGELOG.md
@@ -161,6 +167,8 @@ None
 ```
 
 ### .ctx/learned.md
+- **If exists**: keep existing entries. Append "Detected on init" section at the bottom.
+- **If not exists**: create fresh:
 ```markdown
 # Learned — {project name}
 > Tricks, gotchas, project-specific knowledge. Shared via git.
@@ -168,8 +176,6 @@ None
 
 ## Detected on init — {date}
 {any patterns/gotchas found during Phase 1 codebase reading}
-{e.g. "MySQL 8 requires parseTime=true in DSN"}
-{e.g. "package.json uses pnpm, not npm"}
 {if nothing notable → "Nothing notable yet."}
 ```
 
@@ -188,6 +194,10 @@ None
 ## Phase 6 — Generate .claude/ Files
 
 Inform user: "Writing to .claude/ — will ask for permission once."
+
+**IMPORTANT: Preserve any existing custom rules in `.claude/rules/`.**
+If user has files like `api-guidelines.md` or `coding-standards.md`, do NOT delete them.
+Only create/overwrite the framework rules listed below.
 
 Batch ALL .claude/ writes into one operation:
 
@@ -215,7 +225,18 @@ Copy from .claude/bootstrap/rules/stacks/{detected_stack}.md
 ## Phase 7 — Generate CLAUDE.md
 
 ### New project or no existing CLAUDE.md:
-Generate from .claude/bootstrap/CLAUDE.md.tmpl with all values filled in.
+Generate from .claude/bootstrap/CLAUDE.md.tmpl. Replace ALL placeholders:
+
+| Placeholder | Source |
+|-------------|--------|
+| `{{PROJECT_NAME}}` | From Phase 2 question 1 |
+| `{{PROJECT_DESCRIPTION}}` | From README.md or ask user |
+| `{{CONVO_LANG}}` | From Phase 0 language choice |
+| `{{TASK_PREFIX}}` | From Phase 2 question 3 (default: `T-`) |
+| `{{STACK_SUMMARY}}` | Generate from detected stack (Phase 1) |
+| `{{IMPACT_RULES}}` | Generate from detected stack, or leave as example row if new project |
+
+Verify NO `{{...}}` placeholders remain in the final CLAUDE.md.
 
 ### Existing CLAUDE.md (no framework):
 - Read existing file entirely
