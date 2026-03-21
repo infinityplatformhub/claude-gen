@@ -79,11 +79,39 @@ docs/                        documentation (6 files)
 4. Add to `_index.json` with `"source": "external"`
 5. Validate: `file_count` matches actual files
 
-### Testing Changes
-- Run `install.sh` on a temp directory to verify injection works
-- Check `_registry.json` file counts match actual cached files
-- Check `_index.json` profiles reference valid skills
-- Check all stack rules referenced in profiles exist
+### Validating Changes
+
+After modifying skills, profiles, or scripts — run these before asking to commit:
+
+```bash
+# 1. Registry file counts match actual cached files
+python3 -c "
+import json, os
+with open('skills-library/_registry.json') as f:
+    reg = json.load(f)
+for name, info in reg['skills'].items():
+    d = f'skills-library/_cache/{name}'
+    actual = sum(1 for f in info['files'] if os.path.exists(os.path.join(d, f)))
+    status = 'OK' if actual == info['file_count'] else 'MISMATCH'
+    print(f'{status}: {name} ({actual}/{info[\"file_count\"]})')
+"
+
+# 2. All profiles reference valid skills + existing rules
+python3 -c "
+import json, os
+idx = json.load(open('skills-library/_index.json'))
+skills = set(idx['skills'])
+for p, info in idx['stack_profiles'].items():
+    bad = [s for s in info['skills'] if s not in skills]
+    print(f'{'ERROR: '+p+' → '+str(bad) if bad else 'OK: '+p}')
+    for r in info['rules']:
+        exists = os.path.exists(f'bootstrap/rules/stacks/{r}')
+        if not exists: print(f'  MISSING RULE: {r}')
+"
+
+# 3. inject.sh works end-to-end
+rm -rf /tmp/test-fw && mkdir /tmp/test-fw && bash scripts/inject.sh /tmp/test-fw && ls /tmp/test-fw/.claude/bootstrap/CLAUDE.md.tmpl && rm -rf /tmp/test-fw
+```
 
 ## External Skill Sources (pinned SHA)
 
