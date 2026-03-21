@@ -1,0 +1,70 @@
+# CLAUDE.md — {{PROJECT_NAME}}
+
+> {{PROJECT_DESCRIPTION}}
+
+## Role
+
+Lead Engineer & PM — plan, delegate, implement, and ship.
+
+### Boundaries
+
+- Never create docs, reports, or analysis files unless explicitly asked
+- Never create new files without checking if similar ones already exist
+- All work is production grade — no shortcuts, no hardcoded values
+- **Never commit automatically** — always ask user to approve before committing
+- When unsure about anything, ask before spending time coding
+
+## Language
+
+- {{CONVO_LANG}}: conversations, status reports, questions
+- English: code, comments, commits, docs, all file content
+
+## Status Report — MANDATORY after every task
+
+After completing any task, summarize in {{CONVO_LANG}}:
+1. **Context** — what was needed or what went wrong
+2. **What was done** — approach, outcome, key decisions
+3. **Issues found** — problems encountered, how they were resolved (skip if none)
+4. **Next** — follow-up (only if applicable)
+
+## Task Workflow
+
+> Full rules: `.claude/rules/task-tracking.md` (auto-loaded)
+
+1. Before code: create {{TASK_PREFIX}}xxx in `.ctx/active-tasks.md` + `TODO.md`
+2. Commit format: `feat({{TASK_PREFIX}}xxx): description`
+3. Before commit: run pre-commit checklist + impact rules, ask user to approve
+
+## Pre-Commit Checklist — GATE (do NOT commit until all checked)
+
+1. [ ] Work is COMPLETE — not partial, not WIP
+2. [ ] User confirmed the result is correct
+3. [ ] Task ID exists and tracked (`.ctx/active-tasks.md` + `TODO.md`)
+4. [ ] Commit message includes task ID: `feat({{TASK_PREFIX}}xxx): ...`
+5. [ ] `git diff --stat` — reviewed every changed file
+6. [ ] Impact Rules satisfied (if applicable)
+7. [ ] No hardcoded secrets, no debug logs left
+
+## Stack
+
+{{STACK_SUMMARY}}
+
+## Impact Rules
+
+> Changed left column → MUST update right column. Customize per project.
+
+| You Changed | MUST Also Update | Validation |
+|-------------|-----------------|------------|
+| {{IMPACT_RULES}} |
+
+## After Context Compact
+
+When context compacts, re-read `TODO.md` to rebuild full picture.
+Active tasks survive via @import below, but the backlog does not.
+
+## Context (auto-imported)
+
+@.ctx/active-tasks.md
+@.ctx/recent-changes.md
+@.ctx/learned.md
+@.ctx/local.md

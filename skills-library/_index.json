@@ -1,0 +1,173 @@
+{
+  "skills": {
+    "golang-pro": {
+      "description": "Go 1.22+ — goroutines, GORM, concurrent patterns",
+      "stacks": ["go-backend", "go-nuxt", "go-react", "go-api"],
+      "source": "external"
+    },
+    "golang-testing": {
+      "description": "Go testing — table-driven, testcontainers, mocks",
+      "stacks": ["go-backend", "go-nuxt", "go-react", "go-api"],
+      "source": "local"
+    },
+    "python-pro": {
+      "description": "Python 3.12+ — async, typing, packaging, testing",
+      "stacks": ["python-fastapi", "python-django", "python-nuxt"],
+      "source": "external"
+    },
+    "django-expert": {
+      "description": "Django 5+ — ORM, DRF, auth, query optimization",
+      "stacks": ["python-django"],
+      "source": "external"
+    },
+    "fastapi-expert": {
+      "description": "FastAPI — async SQLAlchemy, Pydantic V2, dependency injection",
+      "stacks": ["python-fastapi"],
+      "source": "external"
+    },
+    "php-pro": {
+      "description": "PHP 8.3+ — typed code, async, Swoole, Laravel/Symfony patterns",
+      "stacks": ["php-laravel", "php-api"],
+      "source": "external"
+    },
+    "laravel-specialist": {
+      "description": "Laravel 10+ — Eloquent, Livewire, queues, Pest testing",
+      "stacks": ["php-laravel"],
+      "source": "external"
+    },
+    "typescript-pro": {
+      "description": "TypeScript 5+ — advanced types, generics, strict patterns",
+      "stacks": ["nodejs-express", "nodejs-nuxt", "nodejs-react", "react-standalone"],
+      "source": "external"
+    },
+    "react-expert": {
+      "description": "React 18/19 — hooks, server components, state management",
+      "stacks": ["nodejs-react", "go-react", "react-standalone", "php-react"],
+      "source": "external"
+    },
+    "nextjs-developer": {
+      "description": "Next.js 14/15 — App Router, server actions, data fetching",
+      "stacks": ["nodejs-react", "react-standalone"],
+      "source": "external"
+    },
+    "nuxt": {
+      "description": "Nuxt 3/4 — conventions, composables, server routes",
+      "stacks": ["go-nuxt", "nodejs-nuxt", "python-nuxt"],
+      "source": "external"
+    },
+    "vue": {
+      "description": "Vue 3 — Composition API, TypeScript, Pinia",
+      "stacks": ["go-nuxt", "nodejs-nuxt", "python-nuxt"],
+      "source": "external"
+    },
+    "vitest": {
+      "description": "Vitest — modern JS/TS testing, mocking, coverage",
+      "stacks": ["nodejs-express", "nodejs-nuxt", "nodejs-react", "react-standalone"],
+      "source": "external"
+    },
+    "git-advanced": {
+      "description": "Advanced git — rebase, squash, commit surgery",
+      "stacks": ["*"],
+      "source": "local"
+    },
+    "debugging": {
+      "description": "Structured debugging — root cause first",
+      "stacks": ["*"],
+      "source": "local"
+    },
+    "migration-database": {
+      "description": "DB migration — multi-dialect, safe rollback",
+      "stacks": ["go-backend", "go-nuxt", "go-api", "python-fastapi", "python-django", "nodejs-express", "php-laravel", "php-api"],
+      "source": "local"
+    },
+    "docker": {
+      "description": "Docker + Compose — multi-service, healthcheck",
+      "stacks": ["*"],
+      "source": "local"
+    },
+    "security-audit": {
+      "description": "Security — OWASP, injection, auth, confidence-based review",
+      "stacks": ["*"],
+      "source": "external"
+    }
+  },
+  "stack_profiles": {
+    "go-nuxt": {
+      "description": "Go backend + Nuxt 3 frontend",
+      "skills": ["golang-pro", "golang-testing", "nuxt", "vue",
+                 "migration-database", "docker", "git-advanced",
+                 "debugging", "security-audit"],
+      "rules": ["go-backend.md", "vue-nuxt.md"]
+    },
+    "go-react": {
+      "description": "Go backend + React frontend",
+      "skills": ["golang-pro", "golang-testing", "react-expert",
+                 "migration-database", "docker", "git-advanced",
+                 "debugging", "security-audit"],
+      "rules": ["go-backend.md", "react.md"]
+    },
+    "go-api": {
+      "description": "Go API-only (no frontend)",
+      "skills": ["golang-pro", "golang-testing", "migration-database",
+                 "docker", "git-advanced", "debugging", "security-audit"],
+      "rules": ["go-backend.md"]
+    },
+    "python-fastapi": {
+      "description": "Python FastAPI backend",
+      "skills": ["python-pro", "fastapi-expert", "migration-database",
+                 "docker", "git-advanced", "debugging", "security-audit"],
+      "rules": ["python-fastapi.md"]
+    },
+    "python-django": {
+      "description": "Python Django backend",
+      "skills": ["python-pro", "django-expert", "migration-database",
+                 "docker", "git-advanced", "debugging", "security-audit"],
+      "rules": ["python-fastapi.md"]
+    },
+    "php-laravel": {
+      "description": "PHP Laravel full-stack",
+      "skills": ["php-pro", "laravel-specialist", "migration-database",
+                 "docker", "git-advanced", "debugging", "security-audit"],
+      "rules": ["php-laravel.md"]
+    },
+    "php-api": {
+      "description": "PHP API-only (Laravel/Symfony)",
+      "skills": ["php-pro", "migration-database", "docker",
+                 "git-advanced", "debugging", "security-audit"],
+      "rules": ["php-laravel.md"]
+    },
+    "php-react": {
+      "description": "PHP backend + React frontend (Inertia.js or API)",
+      "skills": ["php-pro", "laravel-specialist", "react-expert",
+                 "typescript-pro", "vitest", "migration-database",
+                 "docker", "git-advanced", "debugging", "security-audit"],
+      "rules": ["php-laravel.md", "react.md"]
+    },
+    "nodejs-express": {
+      "description": "Node.js Express/Fastify backend",
+      "skills": ["typescript-pro", "vitest", "migration-database",
+                 "docker", "git-advanced", "debugging", "security-audit"],
+      "rules": ["nodejs-express.md"]
+    },
+    "nodejs-nuxt": {
+      "description": "Node.js backend + Nuxt 3 frontend",
+      "skills": ["typescript-pro", "nuxt", "vue", "vitest",
+                 "docker", "git-advanced", "debugging", "security-audit"],
+      "rules": ["vue-nuxt.md", "nodejs-express.md"]
+    },
+    "nodejs-react": {
+      "description": "Node.js backend + React/Next.js frontend",
+      "skills": ["typescript-pro", "react-expert", "nextjs-developer",
+                 "vitest", "migration-database", "docker",
+                 "git-advanced", "debugging", "security-audit"],
+      "rules": ["nodejs-express.md", "react.md"]
+    },
+    "react-standalone": {
+      "description": "React/Next.js frontend (BaaS or separate API)",
+      "skills": ["typescript-pro", "react-expert", "nextjs-developer",
+                 "vitest", "docker", "git-advanced", "debugging",
+                 "security-audit"],
+      "rules": ["react.md"]
+    }
+  }
+}

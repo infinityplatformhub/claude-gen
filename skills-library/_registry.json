@@ -1,0 +1,103 @@
+{
+  "$schema": "Registry of external skills with pinned versions. Used by /sync-skills to update.",
+  "sources": {
+    "jeffallan": {
+      "repo": "github:Jeffallan/claude-skills",
+      "ref": "3bf9a24b76a7c122f1fc05e83929fbc84e1c207a",
+      "license": "MIT",
+      "fetched": "2026-03-22"
+    },
+    "antfu": {
+      "repo": "github:antfu/skills",
+      "ref": "c35a5588a5158b5b404a14fb10469b2b6dc1952b",
+      "license": "MIT",
+      "fetched": "2026-03-22"
+    },
+    "sentry": {
+      "repo": "github:getsentry/skills",
+      "ref": "d2541c0e5f4f1322208f93bef6f6561a5bf95151",
+      "license": "MIT",
+      "fetched": "2026-03-22"
+    }
+  },
+  "skills": {
+    "golang-pro": {
+      "source": "jeffallan",
+      "path": "skills/golang-pro",
+      "files": ["SKILL.md", "references/concurrency.md", "references/generics.md", "references/interfaces.md", "references/project-structure.md", "references/testing.md"],
+      "file_count": 6
+    },
+    "python-pro": {
+      "source": "jeffallan",
+      "path": "skills/python-pro",
+      "files": ["SKILL.md", "references/async-patterns.md", "references/packaging.md", "references/standard-library.md", "references/testing.md", "references/type-system.md"],
+      "file_count": 6
+    },
+    "typescript-pro": {
+      "source": "jeffallan",
+      "path": "skills/typescript-pro",
+      "files": ["SKILL.md", "references/advanced-types.md", "references/configuration.md", "references/patterns.md", "references/type-guards.md", "references/utility-types.md"],
+      "file_count": 6
+    },
+    "react-expert": {
+      "source": "jeffallan",
+      "path": "skills/react-expert",
+      "files": ["SKILL.md", "references/hooks-patterns.md", "references/migration-class-to-modern.md", "references/performance.md", "references/react-19-features.md", "references/server-components.md", "references/state-management.md", "references/testing-react.md"],
+      "file_count": 8
+    },
+    "nextjs-developer": {
+      "source": "jeffallan",
+      "path": "skills/nextjs-developer",
+      "files": ["SKILL.md", "references/app-router.md", "references/data-fetching.md", "references/deployment.md", "references/server-actions.md", "references/server-components.md"],
+      "file_count": 6
+    },
+    "nuxt": {
+      "source": "antfu",
+      "path": "skills/nuxt",
+      "files": ["SKILL.md", "references/advanced-hooks.md", "references/advanced-layers.md", "references/advanced-module-authoring.md", "references/best-practices-data-fetching.md", "references/best-practices-ssr.md", "references/core-cli.md", "references/core-config.md", "references/core-data-fetching.md", "references/core-deployment.md", "references/core-directory-structure.md", "references/core-modules.md", "references/core-routing.md", "references/features-components-autoimport.md", "references/features-components.md", "references/features-composables.md", "references/features-server.md", "references/features-state.md", "references/rendering-modes.md"],
+      "file_count": 19
+    },
+    "vue": {
+      "source": "antfu",
+      "path": "skills/vue",
+      "files": ["SKILL.md", "references/advanced-patterns.md", "references/core-new-apis.md", "references/script-setup-macros.md"],
+      "file_count": 4
+    },
+    "vitest": {
+      "source": "antfu",
+      "path": "skills/vitest",
+      "files": ["SKILL.md", "references/advanced-environments.md", "references/advanced-projects.md", "references/advanced-type-testing.md", "references/advanced-vi.md", "references/core-cli.md", "references/core-config.md", "references/core-describe.md", "references/core-expect.md", "references/core-hooks.md", "references/core-test-api.md", "references/features-concurrency.md", "references/features-context.md", "references/features-coverage.md", "references/features-filtering.md", "references/features-mocking.md", "references/features-snapshots.md"],
+      "file_count": 17
+    },
+    "php-pro": {
+      "source": "jeffallan",
+      "path": "skills/php-pro",
+      "files": ["SKILL.md", "references/async-patterns.md", "references/laravel-patterns.md", "references/modern-php-features.md", "references/symfony-patterns.md", "references/testing-quality.md"],
+      "file_count": 6
+    },
+    "laravel-specialist": {
+      "source": "jeffallan",
+      "path": "skills/laravel-specialist",
+      "files": ["SKILL.md", "references/eloquent.md", "references/livewire.md", "references/queues.md", "references/routing.md", "references/testing.md"],
+      "file_count": 6
+    },
+    "django-expert": {
+      "source": "jeffallan",
+      "path": "skills/django-expert",
+      "files": ["SKILL.md", "references/authentication.md", "references/drf-serializers.md", "references/models-orm.md", "references/testing-django.md", "references/viewsets-views.md"],
+      "file_count": 6
+    },
+    "fastapi-expert": {
+      "source": "jeffallan",
+      "path": "skills/fastapi-expert",
+      "files": ["SKILL.md", "references/async-sqlalchemy.md", "references/authentication.md", "references/endpoints-routing.md", "references/migration-from-django.md", "references/pydantic-v2.md", "references/testing-async.md"],
+      "file_count": 7
+    },
+    "security-audit": {
+      "source": "sentry",
+      "path": "plugins/sentry-skills/skills/security-review",
+      "files": ["SKILL.md", "LICENSE", "languages/python.md", "languages/javascript.md", "infrastructure/docker.md", "references/api-security.md", "references/authentication.md", "references/authorization.md", "references/business-logic.md", "references/cryptography.md", "references/csrf.md", "references/data-protection.md", "references/deserialization.md", "references/error-handling.md", "references/file-security.md", "references/injection.md", "references/logging.md", "references/misconfiguration.md", "references/modern-threats.md", "references/ssrf.md", "references/supply-chain.md", "references/xss.md"],
+      "file_count": 22
+    }
+  }
+}

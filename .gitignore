@@ -1,0 +1,37 @@
+# Claude Code Framework
+.ctx/local.md
+.claude/settings.local.json
+CLAUDE.local.md
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.jsonl
+logs/
+
+# Temp
+tmp/
+temp/
+
+# ─── Add stack-specific ignores during init ──────────────────
+# Examples:
+# node_modules/
+# __pycache__/
+# *.pyc
+# vendor/
+# bin/
+# dist/
+# .output/
