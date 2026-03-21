@@ -21,6 +21,10 @@ cp "$FRAMEWORK_DIR/.claude/agents/"*.md   "$TARGET/.claude/agents/"  2>/dev/null
 # Copy skills library (local skills + _cache + manifests)
 cp -r "$FRAMEWORK_DIR/skills-library/." "$TARGET/.claude/skills/_library/"
 
+# Copy bootstrap templates (for init-agent to use)
+mkdir -p "$TARGET/.claude/bootstrap"
+cp -r "$FRAMEWORK_DIR/bootstrap/." "$TARGET/.claude/bootstrap/"
+
 # Seed .ctx/ if empty
 [ -f "$TARGET/.ctx/active-tasks.md" ] || \
   printf "# Active Tasks\n\n## In Progress\nNone\n\n## Blocked\nNone\n" \

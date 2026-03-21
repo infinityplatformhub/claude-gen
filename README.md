@@ -18,8 +18,8 @@ See [Getting Started](docs/getting-started.md) for more options.
 
 ## What You Get
 
-- **14 curated skills** — 9 from community (pinned SHA, verified) + 5 self-authored
-- **9 stack profiles** — Go, Python, Node.js, React combinations auto-detected
+- **18 curated skills** — 13 from community (pinned SHA, verified) + 5 self-authored
+- **12 stack profiles** — Go, Python, PHP, Node.js, React combinations auto-detected
 - **Task tracking** — PM autonomy, commit discipline, impact rules
 - **Auto-init** — 9-phase setup: detect stack, select skills, generate config
 - **Offline-ready** — all skills cached locally, no network required
@@ -35,17 +35,20 @@ See [Features](docs/features.md) for details.
 | `go-api` | Go | — |
 | `python-fastapi` | FastAPI | — |
 | `python-django` | Django | — |
+| `php-laravel` | Laravel | — |
+| `php-api` | PHP API | — |
+| `php-react` | PHP | React |
 | `nodejs-express` | Express | — |
 | `nodejs-nuxt` | Node.js | Nuxt 3 |
 | `nodejs-react` | Node.js | React/Next.js |
 | `react-standalone` | BaaS | React/Next.js |
 
-## Skills (14 total)
+## Skills (18 total)
 
 ### External (community, cached with pinned SHA)
 | Skill | Source |
 |-------|--------|
-| golang-pro, python-pro, typescript-pro, react-expert, nextjs-developer | [Jeffallan/claude-skills](https://github.com/Jeffallan/claude-skills) |
+| golang-pro, python-pro, typescript-pro, react-expert, nextjs-developer, php-pro, laravel-specialist, django-expert, fastapi-expert | [Jeffallan/claude-skills](https://github.com/Jeffallan/claude-skills) |
 | nuxt, vue, vitest | [antfu/skills](https://github.com/antfu/skills) |
 | security-audit | [getsentry/skills](https://github.com/getsentry/skills) |
 

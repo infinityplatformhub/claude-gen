@@ -105,7 +105,7 @@ skills-library/
 
 ---
 
-## 9 Stack Profiles
+## 12 Stack Profiles
 
 Auto-detected during `/init-project`. Each profile selects the right skills + rules.
 

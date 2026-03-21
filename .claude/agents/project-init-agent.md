@@ -181,7 +181,7 @@ None
 
 ### TODO.md
 - If exists → append framework task section at bottom, do NOT overwrite
-- If not exists → generate from bootstrap/TODO.md.tmpl with project values
+- If not exists → generate from .claude/bootstrap/TODO.md.tmpl with project values
 
 ---
 
@@ -192,12 +192,12 @@ Inform user: "Writing to .claude/ — will ask for permission once."
 Batch ALL .claude/ writes into one operation:
 
 ### .claude/rules/task-tracking.md
-Copy from bootstrap/rules/task-tracking.md.
+Copy from .claude/bootstrap/rules/task-tracking.md.
 IMPORTANT: Replace ALL `{{TASK_PREFIX}}` with the user's chosen prefix (e.g., `T-`).
 Search and replace globally — the file has 20+ occurrences.
 
 ### .claude/rules/dev-workflow.md
-Copy from bootstrap/rules/dev-workflow.md.
+Copy from .claude/bootstrap/rules/dev-workflow.md.
 Replace ALL `{{TASK_PREFIX}}` with the user's chosen prefix.
 
 ### .claude/rules/project-reference.md
@@ -208,14 +208,14 @@ Generate from codebase reading in Phase 1:
 - interfaces/contracts that cannot change
 
 ### .claude/rules/{stack}.md
-Copy from bootstrap/rules/stacks/{detected_stack}.md
+Copy from .claude/bootstrap/rules/stacks/{detected_stack}.md
 
 ---
 
 ## Phase 7 — Generate CLAUDE.md
 
 ### New project or no existing CLAUDE.md:
-Generate from bootstrap/CLAUDE.md.tmpl with all values filled in.
+Generate from .claude/bootstrap/CLAUDE.md.tmpl with all values filled in.
 
 ### Existing CLAUDE.md (no framework):
 - Read existing file entirely
