@@ -13,22 +13,28 @@ A production-ready framework for Claude Code projects. Provides autonomous proje
 - **Roadmap & Ideas** — defer work naturally, tracked in TODO.md without cluttering the backlog
 - **Offline-Ready** — all skills cached locally with pinned commit SHAs
 
-## Quick Start
+## Installation
 
-### First-time Setup
+### Option 1: Plugin (recommended)
+
+From within Claude Code:
+```
+/plugin install infinityplatformhub/claude-gen
+```
+
+### Option 2: CLI
 
 ```
 curl -fsSL https://raw.githubusercontent.com/infinityplatformhub/claude-gen/main/install.sh | sh
 ```
 
-Then open Claude Code and run:
+Then run:
 ```
 /claude-gen-init
 ```
 
 ### Updating
 
-Already installed? Pull latest version from within Claude Code:
 ```
 /claude-gen-update
 ```

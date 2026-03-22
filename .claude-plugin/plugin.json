@@ -1,0 +1,22 @@
+{
+  "name": "claude-gen",
+  "description": "Production-ready framework for Claude Code projects. Autonomous PM, enforced commit quality, persistent context, 18 curated skills, 12 stack profiles, auto-initialization.",
+  "version": "1.0.0",
+  "author": {
+    "name": "infinityplatformhub",
+    "url": "https://github.com/infinityplatformhub"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/infinityplatformhub/claude-gen",
+  "repository": "https://github.com/infinityplatformhub/claude-gen",
+  "keywords": [
+    "framework",
+    "project-management",
+    "task-tracking",
+    "skills",
+    "auto-init",
+    "commit-discipline",
+    "multi-stack"
+  ],
+  "categories": ["development", "productivity"]
+}

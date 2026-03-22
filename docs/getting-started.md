@@ -7,9 +7,25 @@
 
 ---
 
-## Option 1: One-liner Install (Recommended)
+## Option 1: Plugin Install (Recommended)
 
-Best for any project — new or existing.
+Works on all platforms including Windows.
+
+From within Claude Code:
+```
+/plugin install infinityplatformhub/claude-gen
+```
+
+Then run:
+```
+/claude-gen-init
+```
+
+---
+
+## Option 2: CLI Install
+
+For Mac, Linux, WSL:
 
 ```bash
 cd /path/to/your/project
@@ -30,7 +46,7 @@ After install, open Claude Code and run:
 
 ---
 
-## Option 2: Manual Inject
+## Option 3: Manual Inject
 
 If you prefer to keep the framework repo locally:
 

@@ -19,13 +19,19 @@ This automatically:
 
 **Not touched:** CLAUDE.md, TODO.md content, .ctx/, .claude/rules/, active skills.
 
-### Alternative: Re-install from Terminal
+### Alternative: Re-install from Terminal (Mac/Linux/WSL)
 
 ```
 curl -fsSL https://raw.githubusercontent.com/infinityplatformhub/claude-gen/main/install.sh | sh
 ```
 
 Same result as `/claude-gen-update` but runs outside Claude Code. Also creates timestamped backup.
+
+### Alternative: Plugin Re-install (all platforms)
+
+```
+/plugin install infinityplatformhub/claude-gen
+```
 
 ---
 

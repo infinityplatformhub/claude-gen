@@ -28,18 +28,14 @@ git push
 
 ### Usage by Team Members
 
-```bash
-# One-liner to inject into any project
-git clone git@github.com:infinityplatformhub/claude-gen.git /tmp/framework
-/tmp/framework/scripts/inject.sh .
+Plugin install (all platforms):
+```
+/plugin install infinityplatformhub/claude-gen
 ```
 
-Or add as a git alias:
+Or CLI install (Mac/Linux/WSL):
 ```bash
-git config --global alias.claude-init '!f() { git clone git@github.com:infinityplatformhub/claude-gen.git /tmp/claude-fw && /tmp/claude-fw/scripts/inject.sh "${1:-.}" && rm -rf /tmp/claude-fw; }; f'
-
-# Then just:
-git claude-init /path/to/project
+curl -fsSL https://raw.githubusercontent.com/infinityplatformhub/claude-gen/main/install.sh | sh
 ```
 
 ---

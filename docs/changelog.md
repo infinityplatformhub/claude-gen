@@ -6,7 +6,8 @@ Initial release.
 
 - Hybrid registry + cache architecture for skills (pinned SHA, offline-ready)
 - 18 curated skills (13 external + 5 local), 12 stack profiles, 7 stack rules
-- One-liner installer: `curl | sh` with auto-backup of existing .claude/
+- Plugin install: `/plugin install infinityplatformhub/claude-gen` (all platforms)
+- CLI installer: `curl | sh` with auto-backup (Mac/Linux/WSL)
 - 9-phase auto-init agent with stack detection
 - Task tracking, commit discipline, PM autonomy, pre-commit checklist
 - Roadmap & Ideas sections in TODO.md for deferred work
@@ -14,4 +15,3 @@ Initial release.
 - Progress display during /claude-gen-init with /exit recommendation
 - `.claude/skills/_library/` gitignored (re-downloaded on install)
 - Commands: /claude-gen-init, /claude-gen-update, /claude-gen-add-skill, /claude-gen-sync-skills
-- Docs: features, getting-started, deployment, upgrade, skills-guide, migration-flow
