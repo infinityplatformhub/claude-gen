@@ -82,16 +82,27 @@ ls -la .claude/ 2>/dev/null
 cat .ctx/active-tasks.md 2>/dev/null
 ```
 
-### 1.4 Auto-detect stack
-From files found, determine:
-- Backend: Go / Python / Node.js / Ruby / Rust / other
-- Framework: Gin / Fiber / Echo / FastAPI / Express / Rails / other
-- Frontend: Nuxt / React / Vue / Next.js / none
-- Database: MySQL / PostgreSQL / MongoDB / SQLite / none
-- ORM/Migration: GORM / Prisma / SQLAlchemy / Alembic / other
+### 1.4 Auto-detect stack(s)
+
+From files found, detect ALL languages/frameworks present:
+- Backend(s): Go / Python / Node.js / PHP / Ruby / Rust / Java / other
+- Framework(s): Gin / FastAPI / Django / Express / Laravel / Rails / Spring / other
+- Frontend(s): Nuxt / React / Vue / Next.js / Angular / none
+- Database(s): MySQL / PostgreSQL / MongoDB / SQLite / none
 - Infrastructure: Docker / K8s / bare metal
 
-Map to stack_profile from _index.json.
+**Multi-stack detection (mono repo):**
+A project may have multiple stacks. Example: `go.mod` + `composer.json` + `package.json` = Go + PHP + Node.js
+
+For each detected stack, find matching profile(s) in `_index.json`.
+Collect ALL matching profiles — do not pick just one.
+
+**Unknown stack:**
+If a language/framework is detected but has NO matching profile in `_index.json`:
+- Still include universal skills (git-advanced, debugging, docker, security-audit)
+- Search `_library/_cache/` for skills whose name matches the language (e.g., `rust-engineer`, `java-architect`)
+- If relevant skills found in cache → include them
+- Note the unmatched stack in the report so user can `/claude-gen-add-skill` manually
 
 ---
 
@@ -102,10 +113,11 @@ Show auto-detected summary and ask ONLY what cannot be detected:
 ```
 Here's what I found:
 
-  Project : {name from git remote or folder}
-  Stack   : {detected stack profile}
-  Database: {detected DB}
-  Status  : {new / existing without framework / existing with old framework}
+  Project  : {name from git remote or folder}
+  Stack(s) : {list all detected profiles, e.g. "go-api + php-laravel + react-standalone"}
+  Database : {detected DB(s)}
+  Status   : {new / existing without framework / existing with old framework}
+  {if unmatched stacks: "Unmatched: Java (Spring) — no profile, will use universal skills"}
 
 I need a few more details:
   1. Human-readable project name: ___
@@ -125,21 +137,42 @@ Find the skills library:
 find . -name "_index.json" -path "*_library*" 2>/dev/null | head -1
 ```
 
-Read `_index.json` → `stack_profiles[{detected_stack}].skills` list.
+**Build a merged skill list from ALL detected profiles:**
 
-For each skill in list:
-1. Check if `.claude/skills/{skill}/SKILL.md` already exists → skip
-2. Look for skill in this order:
-   a. `.claude/skills/_library/_cache/{skill}/` → external cached skill
-   b. `.claude/skills/_library/{skill}/` → local self-authored skill
-3. Copy entire skill directory (SKILL.md + references/) → `.claude/skills/{skill}/`
-4. Validate: SKILL.md exists, check `_registry.json` file_count if external
-5. Log result
+```
+For each detected profile in _index.json:
+  add profile.skills to merged list
+  add profile.rules to merged rules list
 
-If a skill is in `_index.json` but not found in library:
-- Check `_registry.json` for source info
-- If network available → fetch from source at pinned SHA
-- If network unavailable → skip with warning, suggest `/claude-gen-sync-skills` later
+Deduplicate — each skill/rule appears once even if multiple profiles include it.
+
+If unmatched stacks detected:
+  add universal skills (git-advanced, debugging, docker, security-audit)
+  scan _library/_cache/ for skills matching the language name
+  (e.g., detect Java → look for java-*, spring-* in cache)
+```
+
+For each skill in merged list:
+1. Already in `.claude/skills/{skill}/` → skip
+2. Found in `_library/_cache/{skill}/` → copy to active
+3. Found in `_library/{skill}/` → copy to active
+4. Not found → fetch from registry (if network), else skip + warn
+5. Validate: SKILL.md exists
+6. Log result
+
+For each rule in merged rules list:
+- Will be copied in Phase 6 — just collect the list here
+
+**Fallback for unmatched stacks (no profile, no cached skill):**
+
+If a detected language/framework has no skill at all, Claude must still be effective:
+- Use Claude's built-in knowledge for that language (Claude already knows Ruby, Rust, Java, etc.)
+- Generate a basic `{language}-conventions` custom skill in Phase 4 based on codebase patterns found
+- Include the unmatched stack in the project-reference.md (Phase 6)
+- Note in Phase 9 report: "No dedicated skill for {language} — using built-in knowledge + generated conventions"
+
+The framework provides structure (tasks, commits, context). Claude provides the language expertise.
+Not having a registered skill does NOT block initialization.
 
 ---
 
