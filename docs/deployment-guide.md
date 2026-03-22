@@ -74,39 +74,39 @@ claude
 
 ## Keeping Projects Updated
 
-When the framework is updated (new skills, rule changes):
+### From Within Claude Code (recommended)
 
-### Update Skills Only
-```bash
-# From within a project that uses the framework
-/claude-gen-sync-skills
-```
-
-### Full Framework Update (recommended)
 ```
 /claude-gen-update
 ```
 
-Or re-install from terminal:
+Updates commands, agents, skills, bootstrap templates. Patches TODO.md and .gitignore. Creates backup before overwriting.
+
+### Update Skills Only
+
+```
+/claude-gen-sync-skills
+```
+
+Checks upstream for newer skill versions, updates with approval.
+
+### From Terminal (alternative)
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/infinityplatformhub/claude-gen/main/install.sh | sh
 ```
 
-What update does:
-- Updates `.claude/commands/`, `.claude/agents/`, `.claude/skills/_library/`, `.claude/bootstrap/`
-- Patches `TODO.md` (adds Roadmap/Ideas if missing)
-- Patches `.gitignore` (adds missing entries)
-- Does NOT touch `.ctx/`, `CLAUDE.md`, `.claude/rules/`, or active skills
+Same as `/claude-gen-update` but runs outside Claude Code.
 
-### Manual Update
-If you prefer control:
-```bash
-# Update specific skill
-cp -r /path/to/framework/skills-library/_cache/security-audit/ .claude/skills/_library/_cache/security-audit/
+### What Gets Updated vs Preserved
 
-# Update a rule
-cp /path/to/framework/bootstrap/rules/stacks/go-backend.md .claude/rules/go-backend.md
-```
+| Updated | Preserved |
+|---------|-----------|
+| `.claude/commands/` | `CLAUDE.md` |
+| `.claude/agents/` | `TODO.md` content |
+| `.claude/skills/_library/` | `.ctx/` files |
+| `.claude/bootstrap/` | `.claude/rules/` |
+| `.gitignore` entries | Active skills |
 
 ---
 

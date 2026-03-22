@@ -1,134 +1,94 @@
 # Upgrade Guide
 
-## From Old Framework (src/ based) to v2
+## Updating to Latest Version
 
-If your project uses the old framework with `.claude/context/` and `.claude/memory/`:
+### Recommended: Use /claude-gen-update
+
+From within Claude Code in your project:
+```
+/claude-gen-update
+```
+
+This automatically:
+- Downloads latest framework from GitHub
+- Backs up current commands/agents/rules to `.claude-backup/{timestamp}/`
+- Updates commands, agents, skills library, bootstrap templates
+- Patches `TODO.md` (adds Roadmap/Ideas sections if missing)
+- Patches `.gitignore` (adds missing entries)
+- Tells you to `/exit` and restart for changes to take effect
+
+**Not touched:** CLAUDE.md, TODO.md content, .ctx/, .claude/rules/, active skills.
+
+### Alternative: Re-install from Terminal
+
+```
+curl -fsSL https://raw.githubusercontent.com/infinityplatformhub/claude-gen/main/install.sh | sh
+```
+
+Same result as `/claude-gen-update` but runs outside Claude Code. Also creates timestamped backup.
+
+---
+
+## Migrating from Old Framework (.claude/context/)
+
+If your project uses old paths like `.claude/context/` and `.claude/memory/`:
 
 ### What Changed
 
-| Old (v1) | New (v2) | Why |
-|----------|----------|-----|
-| `.claude/context/active-tasks.md` | `.ctx/active-tasks.md` | No permission prompts for frequent writes |
+| Old | New | Why |
+|-----|-----|-----|
+| `.claude/context/active-tasks.md` | `.ctx/active-tasks.md` | No permission prompts |
 | `.claude/context/recent-changes.md` | `.ctx/recent-changes.md` | Same |
 | `.claude/memory/learned.md` | `.ctx/learned.md` | Same |
 | `.claude/memory/local.md` | `.ctx/local.md` | Same |
-| `.claude/stacks/` | `bootstrap/rules/stacks/` | Stacks are now in the framework, not in projects |
-| Skills flat in `.claude/skills/` | `_library/_cache/` + active | Two-tier: library (all) vs. active (project) |
-| No commands | `.claude/commands/` | /claude-gen-init, /claude-gen-add-skill, /claude-gen-sync-skills |
-| Manual init (INIT.md) | Auto init (project-init-agent) | 9-phase automated setup |
 
 ### Migration Steps
 
 ```bash
-# 1. Backup your current framework files
-cp -r .claude/ .claude.backup/
+# 1. Install latest framework (auto-backup)
+curl -fsSL https://raw.githubusercontent.com/infinityplatformhub/claude-gen/main/install.sh | sh
 
-# 2. Create .ctx/ and move context files
-mkdir -p .ctx
-mv .claude/context/active-tasks.md .ctx/active-tasks.md 2>/dev/null
-mv .claude/context/recent-changes.md .ctx/recent-changes.md 2>/dev/null
-mv .claude/memory/learned.md .ctx/learned.md 2>/dev/null
-mv .claude/memory/local.md .ctx/local.md 2>/dev/null
-
-# 3. Inject the new framework (safe — won't overwrite .ctx/ files)
-/path/to/claude-general-template/scripts/inject.sh .
-
-# 4. Update CLAUDE.md imports
-# Change:
-#   @.claude/context/active-tasks.md → @.ctx/active-tasks.md
-#   @.claude/context/recent-changes.md → @.ctx/recent-changes.md
-#   @.claude/memory/learned.md → @.ctx/learned.md
-#   @.claude/memory/local.md → @.ctx/local.md
-
-# 5. Update .gitignore
-# Remove: .claude/memory/local.md
-# Add: .ctx/local.md
-
-# 6. Clean up old directories
-rm -rf .claude/context/ .claude/memory/ .claude/stacks/
-
-# 7. Run init to finalize
+# 2. Open Claude Code
 claude
+
+# 3. Run init — it detects old framework and migrates automatically
 /claude-gen-init
-# Choose: "Existing project, has old framework" when asked
 ```
 
-### What /claude-gen-init Preserves
-- Your custom rules in `.claude/rules/`
-- Your task history in `.ctx/active-tasks.md` and `.ctx/recent-changes.md`
-- Your learned gotchas in `.ctx/learned.md`
-- Custom sections in CLAUDE.md
-
-### What Gets Updated
-- CLAUDE.md @-imports (point to .ctx/ instead of .claude/context/)
-- New commands added to `.claude/commands/`
-- Skills library installed to `.claude/skills/_library/`
+The init agent (Scenario C) will:
+- Move content from `.claude/context/` → `.ctx/`
+- Move content from `.claude/memory/` → `.ctx/`
+- Update CLAUDE.md @-imports to point to `.ctx/`
+- Delete old directories after migration
+- Preserve all custom rules and task history
 
 ---
 
-## Updating Framework Version
+## Updating Individual Skills
 
-When a new version of claude-general-template is released:
-
-### Quick Update (Skills + Commands Only)
-
-```bash
-# Re-run inject.sh — safe, won't overwrite project files
-/path/to/claude-general-template/scripts/inject.sh .
 ```
-
-This updates:
-- `.claude/commands/*.md`
-- `.claude/agents/*.md`
-- `.claude/skills/_library/` (all skills)
-
-Does NOT touch:
-- `.ctx/` files
-- `.claude/rules/` (your custom rules)
-- `.claude/skills/{active-skills}/` (your active skills)
-- `CLAUDE.md`, `TODO.md`
-
-### Full Update (Including Rules)
-
-```bash
-# 1. Re-inject
-/path/to/claude-general-template/scripts/inject.sh .
-
-# 2. Compare and update rules manually
-diff .claude/rules/task-tracking.md /path/to/framework/bootstrap/rules/task-tracking.md
-diff .claude/rules/dev-workflow.md /path/to/framework/bootstrap/rules/dev-workflow.md
-
-# 3. Update active skills to latest cached versions
 /claude-gen-sync-skills
 ```
 
-### Updating Individual Skills
+Checks upstream repos for newer versions, validates file integrity, updates with your approval.
 
+Or add a specific skill:
 ```
-# Inside Claude Code
-/claude-gen-sync-skills
-```
-
-Or manually:
-```bash
-# Update a specific skill from framework
-cp -r /path/to/framework/skills-library/_cache/security-audit/ \
-  .claude/skills/_library/_cache/security-audit/
-
-# Also update active copy if skill is active
-cp -r .claude/skills/_library/_cache/security-audit/ \
-  .claude/skills/security-audit/
+/claude-gen-add-skill react-expert
 ```
 
 ---
 
 ## Adding Custom Skills
 
-### Create a Local Skill
+### Create a Project-Specific Skill
 
 ```bash
 mkdir -p .claude/skills/my-custom-skill
-cat > .claude/skills/my-custom-skill/SKILL.md << 'EOF'
+```
+
+Create `.claude/skills/my-custom-skill/SKILL.md`:
+```yaml
 ---
 name: my-custom-skill
 description: What it does and when to use it.
@@ -137,26 +97,17 @@ description: What it does and when to use it.
 # My Custom Skill
 
 Instructions for Claude...
-EOF
 ```
 
-### Add to Framework for All Projects
+### Add to Framework (for All Projects)
 
-1. Create the skill in `skills-library/` (root level, not `_cache/`)
+1. Create in `skills-library/` (root level, not `_cache/`)
 2. Add to `_index.json` under `skills` with `"source": "local"`
 3. Add to relevant `stack_profiles`
 
-### Add an External Skill from Community
+### Add External Skill from Community
 
-1. Add entry to `_registry.json`:
-```json
-"new-skill": {
-  "source": "author-name",
-  "path": "skills/new-skill",
-  "files": ["SKILL.md", "references/..."],
-  "file_count": 3
-}
-```
-2. Add source to `sources` if new author
-3. Clone repo, copy to `_cache/new-skill/`
-4. Add to `_index.json`
+1. Clone source repo, verify SKILL.md + references exist
+2. Copy to `skills-library/_cache/{name}/`
+3. Add to `_registry.json` with source, path, files, file_count
+4. Add to `_index.json` with `"source": "external"`

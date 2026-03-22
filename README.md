@@ -15,7 +15,8 @@ A production-ready framework for Claude Code projects. Provides autonomous proje
 
 ## Quick Start
 
-Install:
+### First-time Setup
+
 ```
 curl -fsSL https://raw.githubusercontent.com/infinityplatformhub/claude-gen/main/install.sh | sh
 ```
@@ -25,9 +26,9 @@ Then open Claude Code and run:
 /claude-gen-init
 ```
 
-Existing `.claude/` and `.ctx/` files are automatically backed up before install.
+### Updating
 
-Update to latest version (from within Claude Code):
+Already installed? Pull latest version from within Claude Code:
 ```
 /claude-gen-update
 ```
