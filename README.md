@@ -15,15 +15,17 @@ A reusable framework template for Claude Code projects. Claude acts as Lead Engi
 
 ## Quick Start
 
-```bash
-# One-liner: install into current project
+Install:
+```
 curl -fsSL https://raw.githubusercontent.com/infinityplatformhub/claude-gen/main/install.sh | sh
+```
 
-# Then open Claude Code and run:
+Then open Claude Code and run:
+```
 /init-project
 ```
 
-If you have existing `.claude/` or `.ctx/` files, they're automatically backed up to `.claude-backup/` before install.
+Existing `.claude/` and `.ctx/` files are automatically backed up to `.claude-backup/` before install.
 
 See [Getting Started](docs/getting-started.md) for more options.
 
