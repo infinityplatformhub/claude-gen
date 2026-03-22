@@ -113,7 +113,7 @@ If a skill is in `_index.json` but not found in library:
 
 ## Phase 4 — Generate Custom Skills
 
-Using skill-creator, generate 2 project-specific skills:
+Generate 2 project-specific skills (write SKILL.md directly — no external tool needed):
 
 ### {task-prefix}-workflow skill
 Content: task tracking rules tailored to this project
@@ -234,7 +234,7 @@ Generate from .claude/bootstrap/CLAUDE.md.tmpl. Replace ALL placeholders:
 | `{{CONVO_LANG}}` | From Phase 0 language choice |
 | `{{TASK_PREFIX}}` | From Phase 2 question 3 (default: `T-`) |
 | `{{STACK_SUMMARY}}` | Generate from detected stack (Phase 1) |
-| `{{IMPACT_RULES}}` | Generate from detected stack, or leave as example row if new project |
+| `{{IMPACT_RULES}}` | Generate full markdown table from detected stack. Example: `\| backend/models/*.go \| frontend/types/*.ts \| Run type-checker \|`. If new project, generate a placeholder table with column headers only |
 
 Verify NO `{{...}}` placeholders remain in the final CLAUDE.md.
 
@@ -256,10 +256,12 @@ Verify NO `{{...}}` placeholders remain in the final CLAUDE.md.
 
 ## Phase 8 — Update .gitignore
 
-Check .gitignore exists and has:
+Check .gitignore exists and has ALL of these:
 ```
 .ctx/local.md
 .claude/settings.local.json
+.claude/bootstrap/
+.claude-backup/
 CLAUDE.local.md
 ```
 
@@ -306,8 +308,12 @@ Ready. Say what you want to work on, or use /{task-prefix-lowercase}-new to crea
 
 ### Scenario C: Existing project, has old framework
 - Detect framework version from CLAUDE.md
-- Migrate: move context/memory → .ctx/ if using old paths
-- Update @-imports in CLAUDE.md
+- Migrate old paths if found:
+  - `.claude/context/active-tasks.md` → `.ctx/active-tasks.md`
+  - `.claude/context/recent-changes.md` → `.ctx/recent-changes.md`
+  - `.claude/memory/learned.md` → `.ctx/learned.md`
+  - `.claude/memory/local.md` → `.ctx/local.md`
+- Update @-imports in CLAUDE.md to point to `.ctx/`
 - Preserve all custom rules and task history
 
 ### Scenario D: Project with existing CLAUDE.md but no .ctx/

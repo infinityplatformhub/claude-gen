@@ -44,10 +44,21 @@ cp -r "$FRAMEWORK_DIR/bootstrap/." "$TARGET/.claude/bootstrap/"
 
 # .gitignore
 IGNORE="$TARGET/.gitignore"
+ENTRIES=".ctx/local.md
+.claude/settings.local.json
+.claude/bootstrap/
+.claude-backup/
+CLAUDE.local.md"
+
 if [ -f "$IGNORE" ]; then
-  grep -q ".ctx/local.md"              "$IGNORE" || printf "\n# Claude Framework\n.ctx/local.md\n.claude/settings.local.json\nCLAUDE.local.md\n" >> "$IGNORE"
+  for entry in $ENTRIES; do
+    grep -qF "$entry" "$IGNORE" || printf "%s\n" "$entry" >> "$IGNORE"
+  done
 else
-  printf "# Claude Framework\n.ctx/local.md\n.claude/settings.local.json\nCLAUDE.local.md\n" > "$IGNORE"
+  printf "# Claude Framework\n" > "$IGNORE"
+  for entry in $ENTRIES; do
+    printf "%s\n" "$entry" >> "$IGNORE"
+  done
 fi
 
 # Summary
