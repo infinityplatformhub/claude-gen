@@ -67,7 +67,7 @@ For individual use.
 ./scripts/inject.sh /path/to/my/project
 cd /path/to/my/project
 claude
-/init-project
+/claude-gen-init
 ```
 
 ---

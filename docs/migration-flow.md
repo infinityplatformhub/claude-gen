@@ -15,7 +15,7 @@
 
 ## Responsibility Split — ใครทำอะไร
 
-| Action | install.sh | /init-project |
+| Action | install.sh | /claude-gen-init |
 |--------|:---------:|:------------:|
 | Download framework | ✅ | — |
 | Backup ของเก่า | ✅ | — |
@@ -30,7 +30,7 @@
 | สร้าง .claude/rules/ | — | ✅ |
 | สร้าง/merge CLAUDE.md | — | ✅ |
 
-**หลักคิด:** install.sh = วางโครงสร้าง, /init-project = configure ให้เข้ากับ project
+**หลักคิด:** install.sh = วางโครงสร้าง, /claude-gen-init = configure ให้เข้ากับ project
 
 ---
 
@@ -99,13 +99,13 @@ curl -fsSL https://raw.githubusercontent.com/infinityplatformhub/claude-gen/main
 | `.claude/skills/_library/` | ✅ ทุกครั้ง | re-download ใหม่เสมอ |
 | `.claude/bootstrap/` | ✅ ทุกครั้ง | templates สำหรับ init-agent |
 | `.ctx/*.md` | ❌ สร้างเฉพาะตอนไม่มี | ไม่แตะ content เดิม |
-| `CLAUDE.md` | ❌ ไม่แตะ | ให้ /init-project จัดการ |
-| `TODO.md` | ❌ ไม่แตะ | ให้ /init-project จัดการ |
-| `.claude/rules/*` | ❌ ไม่แตะ | ให้ /init-project จัดการ |
+| `CLAUDE.md` | ❌ ไม่แตะ | ให้ /claude-gen-init จัดการ |
+| `TODO.md` | ❌ ไม่แตะ | ให้ /claude-gen-init จัดการ |
+| `.claude/rules/*` | ❌ ไม่แตะ | ให้ /claude-gen-init จัดการ |
 
 ---
 
-## ขั้นตอนที่ 2: /init-project (9 Phases)
+## ขั้นตอนที่ 2: /claude-gen-init (9 Phases)
 
 ### Phase 0 — ถามภาษา
 
@@ -207,10 +207,10 @@ Placeholders (6 ตัว):
 - git clone fail → แสดง error + exit (ไม่ copy อะไรเลย)
 - copy fail กลางทาง → backup ยังอยู่ รัน install ใหม่ได้
 
-### /init-project ล้มเหลว
+### /claude-gen-init ล้มเหลว
 
 - Non-destructive — merge เท่านั้น ไม่ลบอะไร
-- fail กลาง phase → ไฟล์ที่สร้างแล้วยังอยู่ รัน `/init-project` ใหม่ได้
+- fail กลาง phase → ไฟล์ที่สร้างแล้วยังอยู่ รัน `/claude-gen-init` ใหม่ได้
 - skill fetch fail → ข้าม + แจ้งเตือน ใช้ `/claude-gen-add-skill` ภายหลัง
 
 ---
@@ -223,7 +223,7 @@ Placeholders (6 ตัว):
 - `.ctx/` ไม่ถูก overwrite (สร้างเฉพาะตอนไม่มี)
 - commands/agents/skills/bootstrap overwrite ด้วย version ล่าสุดเสมอ
 
-### /init-project
+### /claude-gen-init
 
 - รันซ้ำได้ — merge แทน overwrite
 - skills ที่ active อยู่แล้ว → ข้าม
@@ -250,7 +250,7 @@ my-project/
 my-project/
 ├── CLAUDE.md                    ← ยังเหมือนเดิม ไม่ถูกแก้
 ├── .claude/
-│   ├── commands/                ← ใหม่ (init-project, add-skill, sync-skills)
+│   ├── commands/                ← ใหม่ (claude-gen-init, claude-gen-update, claude-gen-add-skill, claude-gen-sync-skills)
 │   ├── agents/                  ← ใหม่ (project-init-agent)
 │   ├── bootstrap/               ← ใหม่ (templates)
 │   ├── skills/_library/         ← ใหม่ (18 skills)
@@ -261,7 +261,7 @@ my-project/
 └── ...code
 ```
 
-### หลัง /init-project
+### หลัง /claude-gen-init
 
 ```
 detected: go-nuxt

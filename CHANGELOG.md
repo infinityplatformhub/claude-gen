@@ -11,6 +11,6 @@ Initial release.
 - Task tracking, commit discipline, PM autonomy, pre-commit checklist
 - Roadmap & Ideas sections in TODO.md for deferred work
 - File naming conventions, TODO archiving, no-unsolicited-docs rules
-- Progress display during /init-project with /exit recommendation
+- Progress display during /claude-gen-init with /exit recommendation
 - `.claude/skills/_library/` gitignored (re-downloaded on install)
 - Commands: /claude-gen-init, /claude-gen-update, /claude-gen-add-skill, /claude-gen-sync-skills

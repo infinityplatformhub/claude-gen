@@ -22,7 +22,7 @@ curl -fsSL https://raw.githubusercontent.com/infinityplatformhub/claude-gen/main
 
 Then open Claude Code and run:
 ```
-/init-project
+/claude-gen-init
 ```
 
 Existing `.claude/` and `.ctx/` files are automatically backed up before install.
@@ -31,7 +31,7 @@ See [Getting Started](docs/getting-started.md) for more options.
 
 ## Stack Profiles
 
-Auto-detected during `/init-project`. Each profile selects the right skills and rules.
+Auto-detected during `/claude-gen-init`. Each profile selects the right skills and rules.
 
 | Profile | Backend | Frontend |
 |---------|---------|----------|
@@ -70,7 +70,6 @@ See [Skills Guide](docs/skills-guide.md) for details.
 | `/claude-gen-add-skill [name]` | Add a skill from the library |
 | `/claude-gen-sync-skills` | Update cached skills from upstream |
 
-`/init-project` also works as alias for `/claude-gen-init`.
 
 ## Architecture
 

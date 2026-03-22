@@ -14,7 +14,7 @@ If your project uses the old framework with `.claude/context/` and `.claude/memo
 | `.claude/memory/local.md` | `.ctx/local.md` | Same |
 | `.claude/stacks/` | `bootstrap/rules/stacks/` | Stacks are now in the framework, not in projects |
 | Skills flat in `.claude/skills/` | `_library/_cache/` + active | Two-tier: library (all) vs. active (project) |
-| No commands | `.claude/commands/` | /init-project, /claude-gen-add-skill, /claude-gen-sync-skills |
+| No commands | `.claude/commands/` | /claude-gen-init, /claude-gen-add-skill, /claude-gen-sync-skills |
 | Manual init (INIT.md) | Auto init (project-init-agent) | 9-phase automated setup |
 
 ### Migration Steps
@@ -49,11 +49,11 @@ rm -rf .claude/context/ .claude/memory/ .claude/stacks/
 
 # 7. Run init to finalize
 claude
-/init-project
+/claude-gen-init
 # Choose: "Existing project, has old framework" when asked
 ```
 
-### What /init-project Preserves
+### What /claude-gen-init Preserves
 - Your custom rules in `.claude/rules/`
 - Your task history in `.ctx/active-tasks.md` and `.ctx/recent-changes.md`
 - Your learned gotchas in `.ctx/learned.md`

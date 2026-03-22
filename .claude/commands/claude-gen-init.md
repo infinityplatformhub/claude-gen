@@ -1,7 +1,6 @@
 ---
 name: claude-gen-init
-description: Initialize claude-gen framework. Alias for /init-project.
-             Detects stack, selects skills, generates config automatically.
+description: Initialize claude-gen framework. Detects stack, selects skills, generates config automatically.
 ---
 
 Read and follow the full initialization flow in `.claude/agents/project-init-agent.md`.
