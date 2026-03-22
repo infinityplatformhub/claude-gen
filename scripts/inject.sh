@@ -42,6 +42,13 @@ cp -r "$FRAMEWORK_DIR/bootstrap/." "$TARGET/.claude/bootstrap/"
   printf "# Local Memory\n> Gitignored. Machine-specific notes.\n" \
     > "$TARGET/.ctx/local.md"
 
+# Patch TODO.md — add Roadmap/Ideas if missing
+if [ -f "$TARGET/TODO.md" ]; then
+  if ! grep -q "## Roadmap" "$TARGET/TODO.md"; then
+    printf "\n---\n\n## Roadmap\n\n> No task ID yet — move to backlog sections above when ready to execute.\n\n_Empty_\n\n---\n\n## Ideas\n\n> Captured for future consideration. Not committed to.\n\n_Empty_\n" >> "$TARGET/TODO.md"
+  fi
+fi
+
 # .gitignore
 IGNORE="$TARGET/.gitignore"
 ENTRIES=".ctx/local.md

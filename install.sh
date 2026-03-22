@@ -144,6 +144,14 @@ ok "Bootstrap templates installed"
 
 ok ".ctx/ files ready"
 
+# ─── Patch TODO.md — add Roadmap/Ideas if missing ────────────────────
+if [ -f "$TARGET/TODO.md" ]; then
+  if ! grep -q "## Roadmap" "$TARGET/TODO.md"; then
+    printf "\n---\n\n## Roadmap\n\n> No task ID yet — move to backlog sections above when ready to execute.\n\n_Empty_\n\n---\n\n## Ideas\n\n> Captured for future consideration. Not committed to.\n\n_Empty_\n" >> "$TARGET/TODO.md"
+    ok "TODO.md patched (added Roadmap + Ideas sections)"
+  fi
+fi
+
 # ─── Update .gitignore ───────────────────────────────────────────────
 IGNORE="$TARGET/.gitignore"
 ENTRIES=".ctx/local.md
