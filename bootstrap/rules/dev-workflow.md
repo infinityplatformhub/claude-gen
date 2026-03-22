@@ -90,6 +90,53 @@ Key: **never commit a partial fix**. If fixing file A reveals file B also broken
 
 ---
 
+## Before Creating Endpoints / Routes
+
+ALWAYS scan existing routes before creating new ones. Never create from memory.
+
+```
+# Go (Gin/Echo/Fiber)
+grep -rn "router\.\|\.GET\|\.POST\|\.PUT\|\.DELETE\|\.PATCH" --include="*.go" | grep -v "_test.go" | grep -v vendor
+
+# Node.js (Express/Fastify)
+grep -rn "router\.\|app\.get\|app\.post\|app\.put\|app\.delete" --include="*.ts" --include="*.js" | grep -v node_modules
+
+# PHP (Laravel)
+grep -rn "Route::" --include="*.php" | grep -v vendor
+
+# Python (FastAPI/Django)
+grep -rn "@router\.\|@app\.\|path(\|url(" --include="*.py" | grep -v __pycache__
+```
+
+Then:
+1. Check for similar/duplicate paths (e.g., `/auth` vs `/api/auth` vs `/login`)
+2. Follow the existing naming convention (prefix, versioning, nesting)
+3. If duplicate found → reuse or extend, never create parallel route
+
+---
+
+## Before Creating Components
+
+ALWAYS scan existing components before creating new ones.
+
+```
+# Vue
+find . -name "*.vue" -path "*/components/*" -not -path "*/node_modules/*" | sort
+
+# React
+find . -name "*.tsx" -path "*/components/*" -not -path "*/node_modules/*" | sort
+
+# Check for similar component by function
+grep -rn "export.*function\|export default\|defineComponent" --include="*.vue" --include="*.tsx" -l | xargs grep -l "{keyword}"
+```
+
+Then:
+1. Check if a similar component already exists (search by function, not just name)
+2. Reuse or extend existing — never duplicate
+3. Base/UI components (Button, Card, Badge) should exist in `components/ui/` — never recreate
+
+---
+
 ## File Naming Convention
 
 **Rules:**
