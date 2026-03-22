@@ -1,0 +1,634 @@
+{
+  "version": "2.9",
+  "children": [
+    {
+      "type": "frame",
+      "id": "k9DYc",
+      "x": 0,
+      "y": 0,
+      "name": "Architecture Overview",
+      "width": 1400,
+      "height": 900,
+      "fill": "#0F172A",
+      "layout": "vertical",
+      "gap": 24,
+      "padding": 40,
+      "children": [
+        {
+          "type": "text",
+          "id": "T3JAt",
+          "name": "title",
+          "fill": "#F8FAFC",
+          "content": "Claude Code General Framework — Architecture Overview",
+          "textAlign": "center",
+          "fontFamily": "Inter",
+          "fontSize": 28,
+          "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "4uyvi",
+          "name": "subtitle",
+          "fill": "#94A3B8",
+          "content": "install.sh → project setup → daily workflow",
+          "textAlign": "center",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "l0KM1",
+          "name": "Main Row",
+          "width": "fill_container",
+          "height": "fill_container",
+          "gap": 24,
+          "children": [
+            {
+              "type": "frame",
+              "id": "CQIV0",
+              "name": "Source",
+              "width": 300,
+              "height": "fill_container",
+              "fill": "#1E293B",
+              "cornerRadius": 12,
+              "layout": "vertical",
+              "gap": 16,
+              "padding": 20,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "yGXsm",
+                  "name": "srcTitle",
+                  "fill": "#38BDF8",
+                  "content": "GitHub Repo",
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "8DBXo",
+                  "name": "srcSub",
+                  "fill": "#64748B",
+                  "content": "infinityplatformhub/claude-gen",
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "qeupe",
+                  "name": "srcDiv",
+                  "width": "fill_container",
+                  "height": 1,
+                  "fill": "#334155"
+                },
+                {
+                  "type": "frame",
+                  "id": "fhIxc",
+                  "name": "srcB1",
+                  "width": "fill_container",
+                  "fill": "#0F172A",
+                  "cornerRadius": 8,
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": 12,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "D8FdW",
+                      "name": "srcB1t",
+                      "fill": "#A78BFA",
+                      "content": "bootstrap/",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "pA6jE",
+                      "name": "srcB1d",
+                      "fill": "#94A3B8",
+                      "content": "CLAUDE.md.tmpl\nTODO.md.tmpl\nrules/ (7 stacks)",
+                      "fontFamily": "Inter",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "JgdvU",
+                  "name": "srcB2",
+                  "width": "fill_container",
+                  "fill": "#0F172A",
+                  "cornerRadius": 8,
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": 12,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "QPxOE",
+                      "name": "srcB2t",
+                      "fill": "#34D399",
+                      "content": "skills-library/",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "uVdvY",
+                      "name": "srcB2d",
+                      "fill": "#94A3B8",
+                      "content": "_cache/ (13 external)\nlocal/ (5 self-authored)\n_index.json + _registry.json",
+                      "fontFamily": "Inter",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Y4KGz",
+                  "name": "srcB3",
+                  "width": "fill_container",
+                  "fill": "#0F172A",
+                  "cornerRadius": 8,
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": 12,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "fKKE9",
+                      "name": "srcB3t",
+                      "fill": "#FB923C",
+                      "content": ".claude/",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "blCuR",
+                      "name": "srcB3d",
+                      "fill": "#94A3B8",
+                      "content": "commands/ (3)\nagents/ (1)",
+                      "fontFamily": "Inter",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "SUySk",
+              "name": "Install",
+              "width": 200,
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "padding": 20,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "ACwoG",
+                  "name": "instTitle",
+                  "fill": "#FBBF24",
+                  "content": "Install Flow",
+                  "textAlign": "center",
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "frame",
+                  "id": "UqDrL",
+                  "name": "instSpacer",
+                  "width": 1,
+                  "height": 40
+                },
+                {
+                  "type": "frame",
+                  "id": "6RTiP",
+                  "name": "arr1",
+                  "width": "fill_container",
+                  "fill": "#1E293B",
+                  "cornerRadius": 8,
+                  "layout": "vertical",
+                  "gap": 4,
+                  "padding": 10,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "ipX6r",
+                      "name": "arr1t",
+                      "fill": "#FBBF24",
+                      "content": "curl | sh",
+                      "textAlign": "center",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "VkbcT",
+                      "name": "arr1d",
+                      "fill": "#94A3B8",
+                      "content": "download\nbackup\ncopy files",
+                      "textAlign": "center",
+                      "fontFamily": "Inter",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "nt9i5",
+                  "name": "instSpacer2",
+                  "fill": "#475569",
+                  "content": "↓",
+                  "textAlign": "center",
+                  "fontFamily": "Inter",
+                  "fontSize": 24,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "8H3vb",
+                  "name": "arr2",
+                  "width": "fill_container",
+                  "fill": "#1E293B",
+                  "cornerRadius": 8,
+                  "layout": "vertical",
+                  "gap": 4,
+                  "padding": 10,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "YBFtz",
+                      "name": "arr2t",
+                      "fill": "#FBBF24",
+                      "content": "/init-project",
+                      "textAlign": "center",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "mSJvT",
+                      "name": "arr2d",
+                      "fill": "#94A3B8",
+                      "content": "detect stack\nselect skills\ngenerate config\nmerge CLAUDE.md",
+                      "textAlign": "center",
+                      "fontFamily": "Inter",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "A6ePJ",
+                  "name": "instSpacer3",
+                  "fill": "#475569",
+                  "content": "↓",
+                  "textAlign": "center",
+                  "fontFamily": "Inter",
+                  "fontSize": 24,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "MwpT7",
+                  "name": "arr3",
+                  "width": "fill_container",
+                  "fill": "#059669",
+                  "cornerRadius": 8,
+                  "layout": "vertical",
+                  "gap": 4,
+                  "padding": 10,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "ZzmIw",
+                      "name": "arr3t",
+                      "fill": "#FFFFFF",
+                      "content": "Ready",
+                      "textAlign": "center",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Zmk1w",
+              "name": "Target Project",
+              "width": "fill_container",
+              "height": "fill_container",
+              "fill": "#1E293B",
+              "cornerRadius": 12,
+              "layout": "vertical",
+              "gap": 16,
+              "padding": 20,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "2CfmF",
+                  "name": "tgtTitle",
+                  "fill": "#38BDF8",
+                  "content": "Target Project (after init)",
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "frame",
+                  "id": "vJhNv",
+                  "name": "tgtDiv",
+                  "width": "fill_container",
+                  "height": 1,
+                  "fill": "#334155"
+                },
+                {
+                  "type": "frame",
+                  "id": "HnYCF",
+                  "name": "tgtRow",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "wLpmg",
+                      "name": "tgtLeft",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "layout": "vertical",
+                      "gap": 10,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "Gj7zH",
+                          "name": "ctx",
+                          "width": "fill_container",
+                          "fill": "#0F172A",
+                          "cornerRadius": 8,
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": 10,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Ygb4f",
+                              "name": "ctxT",
+                              "fill": "#34D399",
+                              "content": ".ctx/  (no permission needed)",
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "Fb9Zd",
+                              "name": "ctxD",
+                              "fill": "#94A3B8",
+                              "content": "active-tasks.md\nrecent-changes.md\nlearned.md\nlocal.md (gitignored)",
+                              "fontFamily": "Inter",
+                              "fontSize": 10,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "fkp9A",
+                          "name": "rules",
+                          "width": "fill_container",
+                          "fill": "#0F172A",
+                          "cornerRadius": 8,
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": 10,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "W2ApU",
+                              "name": "rulesT",
+                              "fill": "#A78BFA",
+                              "content": ".claude/rules/",
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "m1C1t",
+                              "name": "rulesD",
+                              "fill": "#94A3B8",
+                              "content": "task-tracking.md\ndev-workflow.md\nproject-reference.md\n{stack}.md\n+ custom rules (preserved)",
+                              "fontFamily": "Inter",
+                              "fontSize": 10,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "y3qRM",
+                          "name": "skills",
+                          "width": "fill_container",
+                          "fill": "#0F172A",
+                          "cornerRadius": 8,
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": 10,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "vesZv",
+                              "name": "skillsT",
+                              "fill": "#FB923C",
+                              "content": ".claude/skills/",
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "SXPIf",
+                              "name": "skillsD",
+                              "fill": "#94A3B8",
+                              "content": "_library/ (read-only, 18 skills)\n{active}/ (copy ตาม stack)\n{project}-arch/ (generated)",
+                              "fontFamily": "Inter",
+                              "fontSize": 10,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "NP2LG",
+                      "name": "tgtRight",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "layout": "vertical",
+                      "gap": 10,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "pg37E",
+                          "name": "claude",
+                          "width": "fill_container",
+                          "fill": "#1E40AF",
+                          "cornerRadius": 8,
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": 10,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Bs67z",
+                              "name": "claudeT",
+                              "fill": "#FFFFFF",
+                              "content": "CLAUDE.md",
+                              "fontFamily": "Inter",
+                              "fontSize": 13,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "jh86W",
+                              "name": "claudeD",
+                              "fill": "#BFDBFE",
+                              "content": "Role + Boundaries\nLanguage + Status Report\nTask Workflow + Pre-commit\nImpact Rules\n@.ctx/ imports",
+                              "fontFamily": "Inter",
+                              "fontSize": 10,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "I2Dzl",
+                          "name": "todo",
+                          "width": "fill_container",
+                          "fill": "#0F172A",
+                          "cornerRadius": 8,
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": 10,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "PRWNC",
+                              "name": "todoT",
+                              "fill": "#FBBF24",
+                              "content": "TODO.md",
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "4dpiu",
+                              "name": "todoD",
+                              "fill": "#94A3B8",
+                              "content": "Backlog (auto-archived)\nMax 20 completed\nOverflow → changelog",
+                              "fontFamily": "Inter",
+                              "fontSize": 10,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "b5H7h",
+                          "name": "backup",
+                          "width": "fill_container",
+                          "fill": "#0F172A",
+                          "cornerRadius": 8,
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": 10,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "zRizr",
+                              "name": "backupT",
+                              "fill": "#F87171",
+                              "content": ".claude-backup/",
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "qttp8",
+                              "name": "backupD",
+                              "fill": "#94A3B8",
+                              "content": "Timestamped backup\nAuto-created on install\nRestore anytime",
+                              "fontFamily": "Inter",
+                              "fontSize": 10,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "wCCbo",
+                          "name": "safety",
+                          "width": "fill_container",
+                          "fill": "#064E3B",
+                          "cornerRadius": 8,
+                          "layout": "vertical",
+                          "gap": 6,
+                          "padding": 10,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "08kXS",
+                              "name": "safetyT",
+                              "fill": "#34D399",
+                              "content": "Safety Guarantees",
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "JjtyT",
+                              "name": "safetyD",
+                              "fill": "#A7F3D0",
+                              "content": "Backup before overwrite\nMerge .ctx/ (not overwrite)\nPreserve custom rules\nIdempotent (rerun safe)\nOffline-ready (cached skills)",
+                              "fontFamily": "Inter",
+                              "fontSize": 10,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
