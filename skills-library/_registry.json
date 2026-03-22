@@ -1,5 +1,5 @@
 {
-  "$schema": "Registry of external skills with pinned versions. Used by /sync-skills to update.",
+  "$schema": "Registry of external skills with pinned versions. Used by /claude-gen-sync-skills to update.",
   "sources": {
     "jeffallan": {
       "repo": "github:Jeffallan/claude-skills",
