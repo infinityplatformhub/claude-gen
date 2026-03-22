@@ -1,57 +1,69 @@
 # Features
 
-## Task Tracking & PM Autonomy
+---
 
-Claude acts as Lead Engineer & PM with full authority to manage tasks.
+## 1. Autonomous Project Management
 
-### Task Lifecycle
+Claude ทำหน้าที่ Lead Engineer & PM — ไม่ใช่แค่ช่วย แต่ตัดสินใจและจัดการเอง
+
+### Task Tracking
+
+- **สร้าง task อัตโนมัติ** — บอกสิ่งที่อยากทำ Claude สร้าง task ทันที ไม่ต้องถาม
+- **Task ID format** — configurable prefix: `T-101`, `TASK-101`, `#101`
+- **Status tracking** — `.ctx/active-tasks.md` (max 5) + `TODO.md` (backlog ทั้งหมด)
+- **History** — เสร็จแล้วย้ายไป `.ctx/recent-changes.md` อัตโนมัติ
+- **Archiving** — `TODO.md` เกิน 20 completed → archive ไป `docs/changelog.md`
+
 ```
 Create → In Progress → Before Commit → Done → Archived
 ```
 
-- **Auto-create tasks** — describe work, Claude opens a task immediately
-- **Task ID format** — configurable prefix: `T-101`, `TASK-101`, `#101`
-- **Status tracking** — `.ctx/active-tasks.md` (max 5 active) + `TODO.md` (full backlog)
-- **History** — completed tasks move to `.ctx/recent-changes.md`
+### PM Decisions (ทำเองไม่ต้องถาม)
+- เมื่อไหร่จะ commit (PM ตัดสิน, user approve)
+- จะแตก subtasks ยังไง
+- จะ bundle changes ยังไง
 
-### PM Decisions (no need to ask)
-- When to commit (PM decides, user approves)
-- How to split work into subtasks
-- When to bundle small changes into one commit
+### ต้องถาม User ก่อนเสมอ
+- ลบไฟล์ หรือ database tables
+- เปลี่ยน shared interfaces
+- เพิ่ม environment variables
+- Commit (ต้อง user approve ทุกครั้ง)
 
-### Always Asks User First
-- Deleting files or database tables
-- Changing shared interfaces
-- Adding new environment variables
-- Committing (explicit user approval required)
+### Status Reports (บังคับ)
+
+หลังทำงานเสร็จทุกครั้ง สรุปเป็นภาษาที่ตั้งค่าไว้:
+1. **Context** — ต้องทำอะไร / มีปัญหาอะไร
+2. **What was done** — วิธี, ผลลัพธ์, การตัดสินใจ
+3. **Issues found** — ปัญหาที่เจอ (ข้ามได้ถ้าไม่มี)
+4. **Next** — ขั้นตอนถัดไป (ข้ามได้ถ้าไม่มี)
 
 ---
 
-## Commit Discipline
+## 2. Code Quality & Safety
 
-No rapid-fire commits. Fix completely, verify, confirm, commit once.
+### Commit Discipline
 
-| Scenario | Strategy |
-|----------|----------|
-| Small bug fix (1-3 files) | Fix completely → 1 commit |
-| Bug reveals more bugs | Fix all related → 1 commit |
-| New feature (small) | Implement fully → 1 commit |
-| New feature (large) | Split into subtasks → 1 commit per subtask |
+Claude **บังคับใช้** commit discipline — ไม่ใช่แค่ guideline แต่เป็น gate ที่ผ่านไม่ได้ถ้าไม่ครบ
 
-### Pre-Commit Checklist (enforced)
-1. Work is complete — not partial, not WIP
-2. User confirmed the result
-3. Task ID exists and tracked
-4. Commit message includes task ID: `feat(T-xxx): ...`
+| สถานการณ์ | กลยุทธ์ |
+|----------|---------|
+| Bug fix เล็ก (1-3 files) | แก้ให้ครบ → 1 commit |
+| Bug แก้แล้วเจออีก | แก้ทั้งหมด → 1 commit |
+| Feature เล็ก | Implement ครบ → 1 commit |
+| Feature ใหญ่ | แตก subtasks → 1 commit ต่อ subtask |
+
+**Pre-Commit Checklist (ต้องผ่านทุกข้อ):**
+1. งานเสร็จครบ ไม่ใช่ WIP
+2. User ยืนยันผลลัพธ์
+3. Task ID tracked ใน `.ctx/active-tasks.md` + `TODO.md`
+4. Commit message มี task ID: `feat(T-xxx): ...`
 5. `git diff --stat` reviewed
 6. Impact Rules satisfied
-7. No hardcoded secrets or debug logs
+7. ไม่มี hardcoded secrets / debug logs
 
----
+### Impact Rules
 
-## Impact Rules
-
-Customizable "if you changed X, you MUST also update Y" rules.
+ป้องกัน drift ระหว่าง layers — "แก้ X แล้วต้องแก้ Y ด้วย" Claude enforce อัตโนมัติ
 
 ```markdown
 | You Changed | MUST Also Update | Validation |
@@ -60,131 +72,112 @@ Customizable "if you changed X, you MUST also update Y" rules.
 | backend/handlers/*.go (new endpoint) | docs/API.md | Run api-validator |
 ```
 
-Prevents drift between layers. Defined per-project in CLAUDE.md during init.
+กำหนดเองได้ต่อ project ใน CLAUDE.md ตอน init
+
+### Security (via Sentry's security-review)
+
+ตรวจจับช่องโหว่ที่ exploit ได้จริง ไม่ใช่แค่ theoretical — ใช้ confidence-based reporting:
+
+| Confidence | Action |
+|-----------|--------|
+| HIGH | พบ pattern + attacker-controlled input → **รายงาน** |
+| MEDIUM | พบ pattern แต่ไม่ชัวร์ → **หมายเหตุให้ตรวจ** |
+| LOW | Theoretical → **ไม่รายงาน** |
+
+ครอบคลุม: injection, XSS, SSRF, CSRF, auth, crypto, deserialization, file security, supply chain — พร้อม language guides สำหรับ Python และ JavaScript
 
 ---
 
-## Status Reports (Mandatory)
+## 3. Knowledge & Context System
 
-After every completed task, Claude summarizes:
-1. **Context** — what was needed
-2. **What was done** — approach, outcome, key decisions
-3. **Next** — follow-up (only if applicable)
+### Context Management
 
-Reports use the project's configured conversation language.
+Claude จำ context ข้าม session ได้ โดยไม่ทำให้ codebase รก
 
----
+| Layer | ไฟล์ | อยู่รอด Context Compact? |
+|-------|------|:----------------------:|
+| System prompt | `CLAUDE.md` | ✅ |
+| Local overrides | `CLAUDE.local.md` (gitignored) | ✅ |
+| Task state | `.ctx/active-tasks.md` | ✅ (via @import) |
+| Recent changes | `.ctx/recent-changes.md` | ✅ (via @import) |
+| Shared knowledge | `.ctx/learned.md` | ✅ (via @import) |
+| Local memory | `.ctx/local.md` (gitignored) | ✅ (via @import) |
+| Full backlog | `TODO.md` | ❌ (อ่านเอง + อ่านหลัง compact) |
 
-## Skills Library (Hybrid Registry + Cache)
+**ทำไม .ctx/ อยู่นอก .claude/?** — Claude เขียน .ctx/ ทุก session (update tasks, เพิ่ม gotchas) วางนอก .claude/ ไม่ต้อง permission prompt
 
-### Architecture
-```
-skills-library/
-├── _index.json         skill → stack profile mapping
-├── _registry.json      external sources with pinned commit SHAs
-├── _cache/             community skills (verified, git-tracked, works offline)
-└── {local}/            self-authored universal skills
-```
+### Skills Library
 
-### How It Works
-- **Cache-first** — skills are pre-downloaded, no network needed for init
-- **Pinned SHA** — external skills locked to specific commit, can't change unexpectedly
-- **Validated** — file count and file list checked against `_registry.json`
-- **Updatable** — `/sync-skills` checks upstream, updates with user approval
+ให้ Claude รู้จัก stack ของ project อย่างลึก — ไม่ต้องอธิบายซ้ำ โหลดเฉพาะที่ใช้ ไม่กิน context เปล่า
 
-### Skill Types
-| Type | Location | Examples |
-|------|----------|---------|
+**Progressive Loading:**
+1. **Metadata** — ชื่อ + description อยู่ใน context เสมอ (~100 words)
+2. **SKILL.md body** — โหลดเมื่อ skill trigger (~200-500 lines)
+3. **References** — โหลดเฉพาะ topic ที่ต้องการ (ไม่จำกัดขนาด)
+
+**Hybrid Registry + Cache:**
+- **Cache-first** — skills อยู่ใน repo ใช้ offline ได้
+- **Pinned SHA** — ล็อค version ไม่เปลี่ยนเอง
+- **Validated** — จำนวนไฟล์ตรงกับ `_registry.json`
+- **Updatable** — `/sync-skills` เช็ค upstream + update ด้วย approval
+
+| ประเภท | ที่อยู่ | ตัวอย่าง |
+|--------|-------|---------|
 | External (community) | `_cache/` | golang-pro, nuxt, react-expert, security-audit |
 | Local (self-authored) | root level | debugging, docker, git-advanced |
 
-### Progressive Loading
-1. **Metadata** — name + description always in context (~100 words)
-2. **SKILL.md body** — loaded when skill triggers (~200-500 lines)
-3. **References** — loaded on-demand when specific topic needed (unlimited)
-
 ---
 
-## 12 Stack Profiles
+## 4. Project Setup
 
-Auto-detected during `/init-project`. Each profile selects the right skills + rules.
+### 12 Stack Profiles
+
+Auto-detect ตอน `/init-project` — เลือก skills + rules ให้อัตโนมัติ ไม่ต้อง config เอง
 
 | Profile | Backend | Frontend | Key Skills |
 |---------|---------|----------|-----------|
 | `go-nuxt` | Go | Nuxt 3 | golang-pro, nuxt, vue, golang-testing |
 | `go-react` | Go | React | golang-pro, react-expert, golang-testing |
 | `go-api` | Go | — | golang-pro, golang-testing |
-| `python-fastapi` | FastAPI | — | python-pro |
-| `python-django` | Django | — | python-pro |
+| `python-fastapi` | FastAPI | — | python-pro, fastapi-expert |
+| `python-django` | Django | — | python-pro, django-expert |
+| `php-laravel` | Laravel | — | php-pro, laravel-specialist |
+| `php-api` | PHP API | — | php-pro |
+| `php-react` | PHP | React | php-pro, laravel-specialist, react-expert |
 | `nodejs-express` | Express | — | typescript-pro, vitest |
 | `nodejs-nuxt` | Node.js | Nuxt 3 | typescript-pro, nuxt, vue, vitest |
 | `nodejs-react` | Node.js | Next.js | typescript-pro, react-expert, nextjs-dev, vitest |
 | `react-standalone` | BaaS | React | typescript-pro, react-expert, nextjs-dev, vitest |
 
-All profiles include: git-advanced, debugging, docker, security-audit.
+ทุก profile รวม: git-advanced, debugging, docker, security-audit
 
----
+### Auto-Init (/init-project)
 
-## Auto-Init (/init-project)
+9 phases อัตโนมัติ:
 
-9-phase automated setup:
+| Phase | สิ่งที่ทำ |
+|-------|---------|
+| 0 | ถามภาษาสำหรับสนทนา |
+| 1 | อ่าน codebase ทั้งหมด (README, deps, git, docker) |
+| 2 | แสดงสิ่งที่ detect ได้ ถามสูงสุด 4 คำถาม |
+| 3 | เลือก + copy skills ตาม detected stack |
+| 4 | สร้าง custom skills เฉพาะ project (arch + workflow) |
+| 5 | สร้าง/merge .ctx/ files |
+| 6 | สร้าง .claude/rules/ |
+| 7 | สร้าง/merge CLAUDE.md |
+| 8 | อัพเดท .gitignore |
+| 9 | สรุปผล |
 
-| Phase | What It Does |
-|-------|-------------|
-| 0. Language | Ask conversation language (English, Thai, etc.) |
-| 1. Discover | Read README, package.json, go.mod, docker-compose, git history |
-| 2. Confirm | Show auto-detected stack, ask max 4 questions |
-| 3. Skills | Select and copy skills matching detected stack |
-| 4. Custom Skills | Generate project-specific arch + workflow skills |
-| 5. .ctx/ Files | Create active-tasks, recent-changes, learned, local |
-| 6. .claude/ Files | Copy rules, stack templates, project reference |
-| 7. CLAUDE.md | Generate or merge system prompt |
-| 8. .gitignore | Add framework entries |
-| 9. Report | Summary of everything created |
+รองรับ 4 สถานการณ์:
+- **Project ใหม่** — ถามเพิ่ม สร้าง skeleton
+- **Project มีอยู่ ไม่มี framework** — อ่าน codebase เยอะ ถามน้อย
+- **Project มี framework เก่า** — migrate paths, เก็บ custom content
+- **มี CLAUDE.md ไม่มี .ctx/** — สร้าง .ctx/ + อัพเดท imports
 
-### Scenario Handling
-- **New empty project** — asks more questions, generates skeleton
-- **Existing project, no framework** — reads codebase extensively, minimal questions
-- **Existing project, old framework** — migrates paths, preserves custom content
-- **Has CLAUDE.md but no .ctx/** — creates .ctx/, updates imports
-
----
-
-## Context Management
-
-| Layer | Files | Survives Context Compact? |
-|-------|-------|--------------------------|
-| System prompt | `CLAUDE.md` | Yes |
-| Local overrides | `CLAUDE.local.md` (gitignored) | Yes |
-| Task state | `.ctx/active-tasks.md` | Yes (via @import) |
-| Recent changes | `.ctx/recent-changes.md` | Yes (via @import) |
-| Shared knowledge | `.ctx/learned.md` | Yes (via @import) |
-| Local memory | `.ctx/local.md` (gitignored) | Yes (via @import) |
-| Full backlog | `TODO.md` | No (read manually) |
-
-### Why .ctx/ Outside .claude/
-Files in `.ctx/` are written by Claude every session (task updates, learned gotchas). Placing them outside `.claude/` avoids permission prompts for frequent writes.
-
----
-
-## Commands
+### Commands
 
 | Command | Description |
 |---------|-------------|
-| `/init-project` | Full project initialization with stack detection |
-| `/add-skill [name]` | Add a skill (cache-first, fetch on miss, validate) |
-| `/sync-skills` | Update cached skills, discover new ones for your stack |
-
----
-
-## Security (via Sentry's security-review)
-
-The bundled security-audit skill uses **confidence-based reporting**:
-
-| Confidence | Action |
-|-----------|--------|
-| HIGH | Vulnerable pattern + attacker-controlled input confirmed → **Report** |
-| MEDIUM | Vulnerable pattern, input source unclear → **Note for verification** |
-| LOW | Theoretical, best practice → **Do not report** |
-
-Covers: injection, XSS, SSRF, CSRF, auth, crypto, deserialization, file security, business logic, modern threats, supply chain, API security — with language-specific guides for Python and JavaScript.
+| `/init-project` | Full project initialization + stack detection |
+| `/add-skill [name]` | เพิ่ม skill (cache-first, fetch on miss, validate) |
+| `/sync-skills` | Update skills จาก upstream + แนะนำ skills ใหม่ |

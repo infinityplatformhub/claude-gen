@@ -1,6 +1,17 @@
 # Claude Code General Framework
 
-A reusable framework template for Claude Code projects. Structured task tracking, commit discipline, PM autonomy, curated skills library, and automated project initialization — stack-agnostic.
+A reusable framework template for Claude Code projects. Claude acts as Lead Engineer & PM — not just an assistant, but a decision maker that manages tasks, enforces commit quality, and maintains project memory.
+
+## Why This Framework
+
+| Without | With Framework |
+|---------|---------------|
+| พิมพ์ `--append-system-prompt` ยาวๆ ทุกครั้ง | ตั้งค่าครั้งเดียว ใช้ได้ตลอด |
+| Claude ลืม context หลัง compact | `.ctx/` auto-imported ทุก session |
+| Commit มัวๆ ไม่มี task ID | Enforced: ต้องมี task ID + user approve |
+| ไม่รู้ stack → ต้องอธิบายซ้ำ | Skills auto-loaded ตาม detected stack |
+| TODO.md บวมไม่มีที่สิ้นสุด | Auto-archive เมื่อเกิน 20 completed |
+| สร้างไฟล์/doc ที่ไม่ได้ขอ | Boundaries rule: ห้ามสร้างถ้าไม่ได้สั่ง |
 
 ## Quick Start
 
