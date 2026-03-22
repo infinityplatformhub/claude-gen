@@ -160,12 +160,6 @@ debug-scripts/
 
 ---
 
-## What NOT to Do (Without Being Asked)
-
-- **Never generate throwaway files** — no debug-result.md, benchmark.md, analysis.md, test-output.md, or similar
-- **Never add comments, docstrings, or type annotations** to code you didn't change
-- Report findings verbally in conversation — don't create files for it
-
 ## What to ALWAYS Do (Without Being Asked)
 
 - **Update existing docs** when your changes affect them (README, TODO.md, CHANGELOG, docs/)
@@ -192,9 +186,6 @@ When user defers work ("do it later", "plan this", "just note it down"), add to 
 ## Gotchas
 
 > Add project-specific gotchas to `.ctx/learned.md` so they persist.
-> This section is for workflow-level gotchas only.
 
-- Always check existing code before creating new files — avoid duplicates
-- Never commit without user approval
 - If a task grows beyond original scope, split into subtasks
 - When in doubt about approach, ask user before spending time coding
