@@ -90,6 +90,13 @@ Types: `feat` | `fix` | `refactor` | `docs` | `chore` | `test` | `perf`
 - This file is auto-imported into context, so keeping it lean matters
 - Older entries are preserved in `TODO.md` Completed section (and eventually `docs/changelog.md`)
 
+## `.ctx/learned.md` Rules
+
+- Maximum ~30 entries — this file is @imported into every session
+- Keep entries short (1 line each) — not paragraphs
+- File-specific gotchas that only matter for 1-2 files → move to path-scoped `.claude/rules/` instead
+- General project gotchas stay here (e.g., "Go requires rebuild", "use pnpm not npm")
+
 ---
 
 ## TODO.md Rules

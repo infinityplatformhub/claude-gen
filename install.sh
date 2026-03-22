@@ -148,6 +148,7 @@ ok ".ctx/ files ready"
 IGNORE="$TARGET/.gitignore"
 ENTRIES=".ctx/local.md
 .claude/settings.local.json
+.claude/skills/_library/
 .claude/bootstrap/
 .claude-backup/
 CLAUDE.local.md"

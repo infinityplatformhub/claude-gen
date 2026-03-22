@@ -46,6 +46,7 @@ cp -r "$FRAMEWORK_DIR/bootstrap/." "$TARGET/.claude/bootstrap/"
 IGNORE="$TARGET/.gitignore"
 ENTRIES=".ctx/local.md
 .claude/settings.local.json
+.claude/skills/_library/
 .claude/bootstrap/
 .claude-backup/
 CLAUDE.local.md"

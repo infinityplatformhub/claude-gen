@@ -7,6 +7,38 @@ allowed-tools: Read, Write, Bash, Glob, Grep, LS
 
 # Project Init Agent
 
+## Progress Display — MANDATORY
+
+### After Phase 2 confirmation — show full plan ONCE:
+
+```
+Setup Plan (9 ขั้นตอน):
+
+  ✅ 1. ถามภาษา → {LANG}
+  ✅ 2. สำรวจ codebase → {profile} detected
+  → 3. Copy skills ตาม {profile} profile
+  · 4. สร้าง custom skills (arch + workflow)
+  · 5. Merge .ctx/ files
+  · 6. สร้าง .claude/rules/
+  · 7. อัพเดท CLAUDE.md
+  · 8. อัพเดท .gitignore
+  · 9. สรุปผล
+```
+
+### After that — just use section headers per phase:
+
+```
+## 3. Copy Skills
+
+  ✓ golang-pro   (cache)
+  ✓ nuxt         (cache)
+  ...
+```
+
+Do NOT repeat the full plan on every phase. Just the heading + results.
+
+---
+
 ## Phase 0 — Language Setup (First Thing)
 
 Before doing anything else, ask the user ONE question:
@@ -234,6 +266,7 @@ Generate from .claude/bootstrap/CLAUDE.md.tmpl. Replace ALL placeholders:
 | `{{CONVO_LANG}}` | From Phase 0 language choice |
 | `{{TASK_PREFIX}}` | From Phase 2 question 3 (default: `T-`) |
 | `{{STACK_SUMMARY}}` | Generate from detected stack (Phase 1) |
+| `{{DEV_COMMANDS}}` | Generate from Makefile, package.json scripts, or detected tools. Include: build, test (all + single), lint, dev server. If none detected, generate sensible defaults for the stack |
 | `{{IMPACT_RULES}}` | Generate full markdown table from detected stack. Example: `\| backend/models/*.go \| frontend/types/*.ts \| Run type-checker \|`. If new project, generate a placeholder table with column headers only |
 
 Verify NO `{{...}}` placeholders remain in the final CLAUDE.md.
@@ -260,6 +293,7 @@ Check .gitignore exists and has ALL of these:
 ```
 .ctx/local.md
 .claude/settings.local.json
+.claude/skills/_library/
 .claude/bootstrap/
 .claude-backup/
 CLAUDE.local.md
@@ -271,24 +305,26 @@ Add missing entries. Create .gitignore if not exists.
 
 ## Phase 9 — Report
 
-Print in {LANG}:
+Use heading `## 9. เสร็จแล้ว!` (or equivalent in {LANG}). Print summary:
 
 ```
-Framework initialized: {project name}
+## 9. เสร็จแล้ว!
 
-Stack profile : {profile}
-Skills active : {list from Phase 3}
-Custom skills : {list from Phase 4}
-.ctx/ created : active-tasks, recent-changes, learned, local
-.claude/ files: rules ({list}), skills ({list})
-CLAUDE.md     : {created / updated / merged}
+  Framework initialized: {project name}
 
-Manual steps needed:
-  - Verify .gitignore includes .ctx/local.md
-  - Set ENV prefix "{PREFIX}_" in your .env file
-  - Check .ctx/active-tasks.md — add current tasks if any
+  Stack   : {profile}
+  Skills  : {count from Phase 3} + {count from Phase 4} custom
+  Rules   : {count} + {preserved count} preserved
+  CLAUDE  : {created / updated / merged}
 
-Ready. Say what you want to work on, or use /{task-prefix-lowercase}-new to create a task.
+  สิ่งที่ควรตรวจ:
+    - ตรวจ .ctx/active-tasks.md ว่า tasks ถูกต้อง
+    - ตรวจ CLAUDE.md ว่า content เดิมยังอยู่ครบ
+    {if Scenario C: - ลบ .claude/context/ และ .claude/memory/ ที่ไม่ใช้แล้ว}
+
+  ⚠️ สำคัญ: พิมพ์ /exit แล้วเปิด claude ใหม่
+  เพื่อให้ CLAUDE.md, rules, skills ที่เพิ่งสร้างถูก load เข้า session
+  หลังจากนั้นพร้อมทำงานได้เลยครับ
 ```
 
 ---
@@ -315,6 +351,11 @@ Ready. Say what you want to work on, or use /{task-prefix-lowercase}-new to crea
   - `.claude/memory/local.md` → `.ctx/local.md`
 - Update @-imports in CLAUDE.md to point to `.ctx/`
 - Preserve all custom rules and task history
+- After migration is complete, **delete old directories**:
+  ```bash
+  rm -rf .claude/context/ .claude/memory/
+  ```
+  Inform user: "ลบ .claude/context/ และ .claude/memory/ ที่ไม่ใช้แล้ว"
 
 ### Scenario D: Project with existing CLAUDE.md but no .ctx/
 - Create .ctx/ files (safe, won't conflict)
