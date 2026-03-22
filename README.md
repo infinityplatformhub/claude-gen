@@ -8,7 +8,7 @@ A production-ready framework for Claude Code projects. Provides autonomous proje
 - **Enforced Commit Quality** — pre-commit checklist, task ID required, user approval gate
 - **Persistent Context** — task state, learned gotchas, and project knowledge survive across sessions
 - **18 Curated Skills** — language, framework, testing, security, and DevOps expertise auto-loaded per stack
-- **12 Stack Profiles** — Go, Python, PHP, Node.js, React — auto-detected, zero config
+- **12 Stack Profiles** — Go, Python, PHP, Node.js, React — auto-detected, multi-stack mono repos supported
 - **Impact Rules** — "changed X → must update Y" enforced automatically
 - **Roadmap & Ideas** — defer work naturally, tracked in TODO.md without cluttering the backlog
 - **Offline-Ready** — all skills cached locally with pinned commit SHAs

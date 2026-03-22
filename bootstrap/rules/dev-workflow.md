@@ -115,10 +115,15 @@ debug-scripts/
 
 ## What NOT to Do (Without Being Asked)
 
-- **Never create docs, reports, or analysis files** unless the user explicitly asks
-- **Never create README, CHANGELOG, or API docs** as a side effect of other work
-- **Never generate summaries or writeups** — report verbally in conversation instead
+- **Never generate throwaway files** — no debug-result.md, benchmark.md, analysis.md, test-output.md, or similar
 - **Never add comments, docstrings, or type annotations** to code you didn't change
+- Report findings verbally in conversation — don't create files for it
+
+## What to ALWAYS Do (Without Being Asked)
+
+- **Update existing docs** when your changes affect them (README, TODO.md, CHANGELOG, docs/)
+- **Update .ctx/active-tasks.md** and `.ctx/recent-changes.md` as part of task lifecycle
+- **Update .ctx/learned.md** when you discover a new gotcha
 
 ---
 

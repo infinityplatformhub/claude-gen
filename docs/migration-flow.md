@@ -113,7 +113,7 @@ curl -fsSL https://raw.githubusercontent.com/infinityplatformhub/claude-gen/main
 
 ### Phase 1 — สำรวจ codebase
 
-อ่าน README, package.json, go.mod, docker-compose, .env.example, git history → detect stack → map เป็น profile
+อ่าน README, package.json, go.mod, docker-compose, .env.example, git history → detect ALL stacks → map เป็น profiles (รองรับ mono repo หลาย stacks)
 
 ### Phase 2 — ยืนยันกับ user (สูงสุด 4 คำถาม)
 

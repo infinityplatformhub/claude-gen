@@ -4,6 +4,8 @@
 
 A skill is a set of instructions that teaches Claude domain-specific expertise. When triggered, Claude reads the SKILL.md and follows its patterns.
 
+Skills are optional — Claude already knows most languages and frameworks. Skills add **project-specific conventions, patterns, and constraints** that go beyond general knowledge. Projects with unregistered stacks still work using universal skills + Claude's built-in expertise.
+
 ### Skill Structure
 ```
 skill-name/

@@ -87,7 +87,7 @@ The init agent runs 9 phases automatically:
 
 1. **Asks your language** — English, Thai, or other
 2. **Reads your codebase** — README, package.json, go.mod, docker-compose, git history
-3. **Detects your stack** — maps to one of 12 profiles (go-nuxt, python-fastapi, php-laravel, etc.)
+3. **Detects your stack(s)** — maps to matching profiles, supports mono repos with multiple stacks
 4. **Confirms with you** — shows what it found, asks max 4 questions
 5. **Copies relevant skills** — from library to active, based on your stack
 6. **Generates custom skills** — architecture reference + workflow rules for your project

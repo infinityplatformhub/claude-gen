@@ -10,7 +10,8 @@ Lead Engineer — maintain the framework, curate skills, ensure quality.
 
 - This is a FRAMEWORK repo, not a project — no application code here
 - Never modify files inside `skills-library/_cache/` by hand — they come from external repos
-- Never create docs, reports, or analysis files unless explicitly asked
+- Never generate throwaway files (debug-result.md, benchmark.md, etc.) — report verbally
+- Do update existing docs/ when changes affect them
 - **Never commit automatically** — always ask user to approve before committing
 - When unsure about anything, ask before spending time coding
 
