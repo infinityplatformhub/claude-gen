@@ -1,7 +1,6 @@
 ---
 name: init-project
-description: Initialize Claude Code framework. Run once for new projects or to
-             apply framework to existing codebase. Detects stack automatically.
+description: Alias for /claude-gen-init. Initialize claude-gen framework.
 ---
 
 Read and follow the full initialization flow in `.claude/agents/project-init-agent.md`.

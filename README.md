@@ -65,9 +65,12 @@ See [Skills Guide](docs/skills-guide.md) for details.
 
 | Command | Description |
 |---------|-------------|
-| `/init-project` | Full project initialization with stack detection |
-| `/add-skill [name]` | Add a skill from the library |
-| `/sync-skills` | Update cached skills from upstream |
+| `/claude-gen-init` | Full project initialization with stack detection |
+| `/claude-gen-update` | Update framework to latest version (auto-patch) |
+| `/claude-gen-add-skill [name]` | Add a skill from the library |
+| `/claude-gen-sync-skills` | Update cached skills from upstream |
+
+`/init-project` also works as alias for `/claude-gen-init`.
 
 ## Architecture
 

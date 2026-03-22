@@ -139,7 +139,7 @@ For each skill in list:
 If a skill is in `_index.json` but not found in library:
 - Check `_registry.json` for source info
 - If network available → fetch from source at pinned SHA
-- If network unavailable → skip with warning, suggest `/sync-skills` later
+- If network unavailable → skip with warning, suggest `/claude-gen-sync-skills` later
 
 ---
 

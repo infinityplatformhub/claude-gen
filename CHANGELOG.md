@@ -13,4 +13,4 @@ Initial release.
 - File naming conventions, TODO archiving, no-unsolicited-docs rules
 - Progress display during /init-project with /exit recommendation
 - `.claude/skills/_library/` gitignored (re-downloaded on install)
-- Commands: /init-project, /add-skill, /sync-skills
+- Commands: /claude-gen-init, /claude-gen-update, /claude-gen-add-skill, /claude-gen-sync-skills

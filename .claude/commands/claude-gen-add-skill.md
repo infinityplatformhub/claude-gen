@@ -1,7 +1,7 @@
 ---
-name: add-skill
+name: claude-gen-add-skill
 description: Add a skill from the library to this project.
-             Usage: /add-skill [skill-name] or /add-skill to see available list.
+             Usage: /claude-gen-add-skill [skill-name] or /claude-gen-add-skill to see available list.
 ---
 
 ## Steps

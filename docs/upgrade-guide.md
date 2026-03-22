@@ -14,7 +14,7 @@ If your project uses the old framework with `.claude/context/` and `.claude/memo
 | `.claude/memory/local.md` | `.ctx/local.md` | Same |
 | `.claude/stacks/` | `bootstrap/rules/stacks/` | Stacks are now in the framework, not in projects |
 | Skills flat in `.claude/skills/` | `_library/_cache/` + active | Two-tier: library (all) vs. active (project) |
-| No commands | `.claude/commands/` | /init-project, /add-skill, /sync-skills |
+| No commands | `.claude/commands/` | /init-project, /claude-gen-add-skill, /claude-gen-sync-skills |
 | Manual init (INIT.md) | Auto init (project-init-agent) | 9-phase automated setup |
 
 ### Migration Steps
@@ -99,14 +99,14 @@ diff .claude/rules/task-tracking.md /path/to/framework/bootstrap/rules/task-trac
 diff .claude/rules/dev-workflow.md /path/to/framework/bootstrap/rules/dev-workflow.md
 
 # 3. Update active skills to latest cached versions
-/sync-skills
+/claude-gen-sync-skills
 ```
 
 ### Updating Individual Skills
 
 ```
 # Inside Claude Code
-/sync-skills
+/claude-gen-sync-skills
 ```
 
 Or manually:

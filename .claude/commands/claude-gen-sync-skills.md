@@ -1,5 +1,5 @@
 ---
-name: sync-skills
+name: claude-gen-sync-skills
 description: Update active skills from library. Check for new relevant skills.
              Fetches latest versions from registry sources.
 ---
@@ -42,7 +42,7 @@ On approval:
 ### 4. On network failure
 ```
 Cannot reach {repo} — using cached version.
-Cached skills are still functional. Try /sync-skills when connected.
+Cached skills are still functional. Try /claude-gen-sync-skills when connected.
 ```
 
 ### 5. Re-detect stack and suggest new skills

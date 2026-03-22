@@ -41,7 +41,7 @@ bootstrap/                   templates deployed to target projects
 skills-library/              curated skills
 ├── _index.json              skill → stack profile mapping (18 skills, 12 profiles)
 ├── _registry.json           external sources with pinned commit SHAs
-├── _cache/                  external skills (13) — DO NOT EDIT, use /sync-skills
+├── _cache/                  external skills (13) — DO NOT EDIT, use /claude-gen-sync-skills
 ├── debugging/               local self-authored skills (5)
 ├── docker/
 ├── git-advanced/
@@ -49,7 +49,7 @@ skills-library/              curated skills
 └── migration-database/
 
 .claude/                     commands + agents for this framework
-├── commands/                /init-project, /add-skill, /sync-skills
+├── commands/                /claude-gen-init, /claude-gen-update, /claude-gen-add-skill, /claude-gen-sync-skills
 └── agents/                  project-init-agent (9 phases)
 
 scripts/                     shell scripts

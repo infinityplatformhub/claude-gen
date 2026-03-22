@@ -79,19 +79,24 @@ When the framework is updated (new skills, rule changes):
 ### Update Skills Only
 ```bash
 # From within a project that uses the framework
-/sync-skills
+/claude-gen-sync-skills
 ```
 
-### Full Re-inject (preserves project customizations)
+### Full Framework Update (recommended)
+```
+/claude-gen-update
+```
+
+Or re-install from terminal:
 ```bash
-# inject.sh is safe to re-run — it won't overwrite .ctx/ files
-/path/to/claude-general-template/scripts/inject.sh .
+curl -fsSL https://raw.githubusercontent.com/infinityplatformhub/claude-gen/main/install.sh | sh
 ```
 
-What re-inject does:
-- Updates `.claude/commands/` and `.claude/agents/`
-- Updates `.claude/skills/_library/` with latest skills
-- Does NOT touch `.ctx/`, `CLAUDE.md`, `TODO.md`, or active skills
+What update does:
+- Updates `.claude/commands/`, `.claude/agents/`, `.claude/skills/_library/`, `.claude/bootstrap/`
+- Patches `TODO.md` (adds Roadmap/Ideas if missing)
+- Patches `.gitignore` (adds missing entries)
+- Does NOT touch `.ctx/`, `CLAUDE.md`, `.claude/rules/`, or active skills
 
 ### Manual Update
 If you prefer control:

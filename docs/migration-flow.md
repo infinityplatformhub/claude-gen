@@ -5,9 +5,10 @@
 ## TL;DR
 
 ```
-1. รัน install.sh   → ดาวน์โหลด framework + backup ของเก่า (ไม่แก้ CLAUDE.md)
-2. รัน /init-project → detect stack + สร้าง/merge config (ไม่ลบของเดิม)
+1. รัน install.sh        → ดาวน์โหลด framework + backup ของเก่า (ไม่แก้ CLAUDE.md)
+2. รัน /claude-gen-init  → detect stack + สร้าง/merge config (ไม่ลบของเดิม)
 3. ทุกอย่าง backup อัตโนมัติ + รัน install ซ้ำกี่ครั้งก็ปลอดภัย
+4. รัน /claude-gen-update → อัพเดท framework version ใหม่ (ไม่ต้อง re-init)
 ```
 
 ---
@@ -52,7 +53,7 @@
 │                                                 │
 │  .claude-backup/    ← ของเก่า (timestamp)        │
 │  .claude/                                       │
-│  ├── commands/      ← /init-project, /add-skill │
+│  ├── commands/      ← /claude-gen-init, /claude-gen-add-skill │
 │  ├── agents/        ← project-init-agent        │
 │  ├── bootstrap/     ← templates (gitignored)    │
 │  ├── skills/                                    │
@@ -210,7 +211,7 @@ Placeholders (6 ตัว):
 
 - Non-destructive — merge เท่านั้น ไม่ลบอะไร
 - fail กลาง phase → ไฟล์ที่สร้างแล้วยังอยู่ รัน `/init-project` ใหม่ได้
-- skill fetch fail → ข้าม + แจ้งเตือน ใช้ `/add-skill` ภายหลัง
+- skill fetch fail → ข้าม + แจ้งเตือน ใช้ `/claude-gen-add-skill` ภายหลัง
 
 ---
 

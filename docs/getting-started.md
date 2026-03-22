@@ -25,7 +25,7 @@ What it does:
 
 After install, open Claude Code and run:
 ```
-/init-project
+/claude-gen-init
 ```
 
 ---
@@ -60,12 +60,12 @@ git init
 claude
 
 # Run the init command
-/init-project
+/claude-gen-init
 ```
 
 ---
 
-## What /init-project Does
+## What /claude-gen-init Does
 
 The init agent runs 9 phases automatically:
 
@@ -93,7 +93,7 @@ your-project/
 │   ├── learned.md                 project gotchas
 │   └── local.md                   machine-specific (gitignored)
 ├── .claude/
-│   ├── commands/                  /init-project, /add-skill, /sync-skills
+│   ├── commands/                  /claude-gen-init, /claude-gen-add-skill, /claude-gen-sync-skills
 │   ├── agents/                    project-init-agent
 │   ├── skills/
 │   │   ├── _library/              all available skills
@@ -120,15 +120,21 @@ Just tell Claude what you want to do. It will:
 
 ### Adding Skills Later
 ```
-/add-skill react-expert
-/add-skill vitest
+/claude-gen-add-skill react-expert
+/claude-gen-add-skill vitest
 ```
 
 ### Updating Skills
 ```
-/sync-skills
+/claude-gen-sync-skills
 ```
 Checks upstream for newer versions, shows diff, asks before updating.
+
+### Updating Framework
+```
+/claude-gen-update
+```
+Pulls latest framework version, patches TODO.md and .gitignore, preserves all project config.
 
 ### Checking Status
 Claude reads `.ctx/active-tasks.md` and `.ctx/recent-changes.md` at the start of every session automatically (via @import in CLAUDE.md).

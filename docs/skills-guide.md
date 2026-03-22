@@ -64,19 +64,19 @@ This keeps context window efficient — Claude only loads what it needs.
 
 ### View Available Skills
 ```
-/add-skill
+/claude-gen-add-skill
 ```
 Lists all skills in the library and which are already active.
 
 ### Activate a Skill
 ```
-/add-skill python-pro
-/add-skill vitest
+/claude-gen-add-skill python-pro
+/claude-gen-add-skill vitest
 ```
 
 ### Update Skills
 ```
-/sync-skills
+/claude-gen-sync-skills
 ```
 Checks upstream repos for newer versions, validates integrity, updates with approval.
 
@@ -93,7 +93,7 @@ rm -rf .claude/skills/skill-name/
 ### External Skills (in `_cache/`)
 - Sourced from community repos (Jeffallan, antfu, Sentry)
 - Pinned to specific commit SHA in `_registry.json`
-- Updated via `/sync-skills`
+- Updated via `/claude-gen-sync-skills`
 - Quality: battle-tested by their communities
 
 ### Local Skills (at root level)
