@@ -275,7 +275,7 @@
                       "id": "YBFtz",
                       "name": "arr2t",
                       "fill": "#FBBF24",
-                      "content": "/init-project",
+                      "content": "/claude-gen-init",
                       "textAlign": "center",
                       "fontFamily": "Inter",
                       "fontSize": 12,

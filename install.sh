@@ -185,5 +185,5 @@ fi
 echo ""
 info "Next step: open Claude Code and run"
 echo ""
-echo "    /init-project"
+echo "    /claude-gen-init"
 echo ""
