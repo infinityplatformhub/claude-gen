@@ -147,7 +147,7 @@ curl -fsSL https://raw.githubusercontent.com/infinityplatformhub/claude-gen/main
 | recent-changes.md | **merge** — เก็บเดิม เพิ่ม git history | สร้างใหม่ |
 | learned.md | **merge** — เก็บเดิม เพิ่ม gotchas | สร้างใหม่ |
 | local.md | **ไม่แตะ** | สร้างใหม่ |
-| TODO.md | **append** — ต่อท้าย | สร้างจาก template |
+| TODO.md | **append** — ต่อท้าย | สร้างจาก template (includes Roadmap + Ideas sections) |
 
 ### Phase 6 — .claude/rules/
 

@@ -122,6 +122,21 @@ debug-scripts/
 
 ---
 
+## Roadmap & Ideas — Future Work Tracking
+
+When user defers work ("do it later", "plan this", "just note it down"), add to `TODO.md`:
+
+| User intent | Section | Format |
+|------------|---------|--------|
+| "do later" / "plan this" / "not now" | **Roadmap** | `- 📋 {description}` |
+| "just an idea" / "not sure yet" / "maybe" | **Ideas** | `- 💬 {description}` |
+| "do it now" / "add task" | **Backlog section** | `- ⬜ **{TASK_PREFIX}xxx** {description}` |
+
+- Roadmap/Ideas do NOT get task IDs — move to backlog when ready to execute
+- Briefly confirm: "Added to Roadmap." or "Noted as idea."
+
+---
+
 ## Gotchas
 
 > Add project-specific gotchas to `.ctx/learned.md` so they persist.
