@@ -27,6 +27,11 @@ Then open Claude Code and run:
 
 Existing `.claude/` and `.ctx/` files are automatically backed up before install.
 
+Update to latest version (from within Claude Code):
+```
+/claude-gen-update
+```
+
 See [Getting Started](docs/getting-started.md) for more options.
 
 ## Stack Profiles
