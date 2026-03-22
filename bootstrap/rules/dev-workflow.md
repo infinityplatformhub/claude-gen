@@ -137,6 +137,37 @@ Then:
 
 ---
 
+## When to Spawn Sub-Agents
+
+Use sub-agents for independent, parallelizable work. Stay single-agent for sequential, context-dependent work.
+
+| Scenario | Approach |
+|----------|----------|
+| Research/explore while working | Spawn Explore agent in background |
+| Run tests while coding | Spawn test agent in background |
+| Multiple independent files to create | Spawn agents in parallel |
+| Sequential logic (fix → test → commit) | Do it yourself |
+| Small task (< 3 files) | Do it yourself |
+| Needs full project context | Do it yourself |
+
+Rules:
+- Always give agent a COMPLETE task description (it has no prior context)
+- Never spawn agent for tasks that need the conversation history
+- Use worktree isolation when agent writes code (prevents conflicts)
+- Check agent results before using — don't blindly trust
+
+---
+
+## When to Use Worktrees
+
+Use git worktrees when agents write code in parallel to avoid conflicts.
+
+- Agent writes code → use `isolation: "worktree"`
+- Agent only reads/researches → no worktree needed
+- Multiple agents writing to same files → DO NOT parallelize, do sequentially
+
+---
+
 ## File Naming Convention
 
 **Rules:**
