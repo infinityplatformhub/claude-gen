@@ -60,6 +60,11 @@ Read `CLAUDE.md` and fix these issues if found (do NOT use sed — read the file
 
 3. **Missing pre-commit item** — if pre-commit checklist exists but lacks "No duplicate routes or components", add it
 
+4. **Old status report format** — if status report uses rigid numbered format with "Issues found" and "Next — follow-up (only if applicable)", update to natural conversational style:
+   - Always cover: what happened/why, what was done, what's next
+   - "What's next" is always required (suggest next step, ask user to verify, or say "nothing else needed")
+   - No fixed headings required — adapt wording to fit the situation
+
 If nothing needs fixing → skip. Only edit what needs fixing. Do NOT rewrite or restructure CLAUDE.md.
 
 ### Step 6 — Review .claude/rules/ for stale content

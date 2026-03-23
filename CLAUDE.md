@@ -22,11 +22,11 @@ Lead Engineer — maintain the framework, curate skills, ensure quality.
 
 ## Status Report — MANDATORY after every task
 
-After completing any task, summarize in Thai:
-1. **Context** — what was needed or what went wrong
-2. **What was done** — approach, outcome, key decisions
-3. **Issues found** — problems encountered, how they were resolved (skip if none)
-4. **Next** — follow-up (only if applicable)
+After completing any task, summarize in Thai. Adapt wording naturally — no fixed headings required, but always cover:
+
+1. **What happened / why** — the problem, request, or context
+2. **What was done** — approach, key decisions, what changed
+3. **What's next** — always include: suggest next step, ask user to verify, or recommend follow-up
 
 ## Repo Structure
 
