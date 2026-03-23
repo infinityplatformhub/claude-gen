@@ -62,7 +62,20 @@ Read `CLAUDE.md` and fix these issues if found (do NOT use sed — read the file
 
 If nothing needs fixing → skip. Only edit what needs fixing. Do NOT rewrite or restructure CLAUDE.md.
 
-### Step 6 — Patch .gitignore
+### Step 6 — Review .claude/rules/ for stale content
+
+Read each file in `.claude/rules/`. Look for:
+- Stale comments that contradict current project state (e.g., "no tests configured" when tests exist)
+- Outdated references to old paths or tools
+- Placeholder text that was never filled in (e.g., "_Add during project init_")
+
+For each issue found:
+- Fix it directly (small edit, not rewrite)
+- Report what was fixed
+
+Do NOT delete or restructure rules files. Do NOT touch custom rules content.
+
+### Step 7 — Patch .gitignore
 
 Ensure these entries exist (add each one only if missing):
 
@@ -72,13 +85,13 @@ for entry in ".ctx/local.md" ".claude/settings.local.json" ".claude/skills/_libr
 done
 ```
 
-### Step 7 — Cleanup
+### Step 8 — Cleanup
 
 ```bash
 rm -rf /tmp/claude-gen-update
 ```
 
-### Step 8 — Report
+### Step 9 — Report
 
 ```
 Framework updated.
