@@ -11,10 +11,11 @@ Pull the latest claude-gen framework and apply updates to this project.
 ### Step 1 — Download latest
 
 ```bash
+rm -rf /tmp/claude-gen-update
 git clone --depth 1 --quiet https://github.com/infinityplatformhub/claude-gen.git /tmp/claude-gen-update
 ```
 
-If clone fails → report error, clean up `/tmp/claude-gen-update`, and stop.
+If clone fails → report error and stop.
 
 ### Step 2 — Backup current framework files
 
@@ -59,20 +60,11 @@ Read `CLAUDE.md` and fix these issues if found (do NOT use sed — read the file
 
 3. **Missing pre-commit item** — if pre-commit checklist exists but lacks "No duplicate routes or components", add it
 
-Only edit what needs fixing. Do NOT rewrite or restructure CLAUDE.md — preserve all custom content.
+If nothing needs fixing → skip. Only edit what needs fixing. Do NOT rewrite or restructure CLAUDE.md.
 
 ### Step 6 — Patch .gitignore
 
 Ensure these entries exist (add each one only if missing):
-
-```
-.ctx/local.md
-.claude/settings.local.json
-.claude/skills/_library/
-.claude/bootstrap/
-.claude-backup/
-CLAUDE.local.md
-```
 
 ```bash
 for entry in ".ctx/local.md" ".claude/settings.local.json" ".claude/skills/_library/" ".claude/bootstrap/" ".claude-backup/" "CLAUDE.local.md"; do
@@ -86,30 +78,28 @@ done
 rm -rf /tmp/claude-gen-update
 ```
 
-Always clean up, even if earlier steps failed.
-
 ### Step 8 — Report
 
 ```
 Framework updated.
 
-  Backup    : .claude-backup/{timestamp}/
-  Commands  : updated (claude-gen-init, claude-gen-update, claude-gen-add-skill, claude-gen-sync-skills)
-  Agents    : updated (project-init-agent)
-  Skills    : {count} cached + {count} local
-  Bootstrap : updated
-  TODO.md   : {patched / already up to date}
-  .gitignore: {patched / already up to date}
+  Backup     : .claude-backup/{timestamp}/
+  Commands   : updated
+  Agents     : updated
+  Skills lib : {count} cached + {count} local
+  Bootstrap  : updated
+  TODO.md    : {patched / already up to date}
+  CLAUDE.md  : {patched / no changes needed}
+  .gitignore : {patched / already up to date}
 
-Not touched: CLAUDE.md, .ctx/, .claude/rules/, active skills
+Not touched: .ctx/, .claude/rules/, active skills
 
 ⚠️ Important: type /exit then reopen claude to load updated config
 ```
 
 ### What is NOT touched
 
-- `CLAUDE.md` — project system prompt (user-managed)
-- `TODO.md` content — only appends missing sections
 - `.ctx/` — all context files preserved
 - `.claude/rules/` — all rules preserved (including custom)
-- `.claude/skills/{active}/` — active skills preserved
+- `.claude/skills/{active}/` — active skills preserved (run /claude-gen-sync-skills to update these)
+- `TODO.md` content — only appends missing sections
