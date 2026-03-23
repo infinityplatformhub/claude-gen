@@ -9,21 +9,24 @@ allowed-tools: Read, Write, Bash, Glob, Grep, LS
 
 ## Progress Display — MANDATORY
 
-### After Phase 2 confirmation — show full plan ONCE:
+### After Phase 2 confirmation — show full plan ONCE (in {LANG}):
 
 ```
-Setup Plan (9 ขั้นตอน):
+Setup Plan (9 steps):
 
-  ✅ 1. ถามภาษา → {LANG}
-  ✅ 2. สำรวจ codebase → {profile} detected
-  → 3. Copy skills ตาม {profile} profile
-  · 4. สร้าง custom skills (arch + workflow)
+  ✅ 1. Language → {LANG}
+  ✅ 2. Discover codebase → {profile} detected
+  → 3. Copy skills for {profile}
+  · 4. Generate custom skills (arch + workflow)
   · 5. Merge .ctx/ files
-  · 6. สร้าง .claude/rules/
-  · 7. อัพเดท CLAUDE.md
-  · 8. อัพเดท .gitignore
-  · 9. สรุปผล
+  · 6. Create .claude/rules/
+  · 7. Generate/merge CLAUDE.md
+  · 8. Update .gitignore
+  · 9. Report
 ```
+
+Translate the plan labels to {LANG} at runtime (the example above is English).
+If user chose Thai, display in Thai. If English, display in English.
 
 ### After that — just use section headers per phase:
 
@@ -338,10 +341,10 @@ Add missing entries. Create .gitignore if not exists.
 
 ## Phase 9 — Report
 
-Use heading `## 9. เสร็จแล้ว!` (or equivalent in {LANG}). Print summary:
+Print summary in {LANG}. Example in English:
 
 ```
-## 9. เสร็จแล้ว!
+## 9. Done!
 
   Framework initialized: {project name}
 
@@ -350,15 +353,16 @@ Use heading `## 9. เสร็จแล้ว!` (or equivalent in {LANG}). Prin
   Rules   : {count} + {preserved count} preserved
   CLAUDE  : {created / updated / merged}
 
-  สิ่งที่ควรตรวจ:
-    - ตรวจ .ctx/active-tasks.md ว่า tasks ถูกต้อง
-    - ตรวจ CLAUDE.md ว่า content เดิมยังอยู่ครบ
-    {if Scenario C: - ลบ .claude/context/ และ .claude/memory/ ที่ไม่ใช้แล้ว}
+  Please verify:
+    - .ctx/active-tasks.md — tasks are correct
+    - CLAUDE.md — existing content preserved
+    {if Scenario C: - Old .claude/context/ and .claude/memory/ have been removed}
 
-  ⚠️ สำคัญ: พิมพ์ /exit แล้วเปิด claude ใหม่
-  เพื่อให้ CLAUDE.md, rules, skills ที่เพิ่งสร้างถูก load เข้า session
-  หลังจากนั้นพร้อมทำงานได้เลยครับ
+  ⚠️ Important: type /exit then reopen claude
+  so the new CLAUDE.md, rules, and skills are loaded into the session.
 ```
+
+Translate to {LANG} at runtime.
 
 ---
 
@@ -388,7 +392,7 @@ Use heading `## 9. เสร็จแล้ว!` (or equivalent in {LANG}). Prin
   ```bash
   rm -rf .claude/context/ .claude/memory/
   ```
-  Inform user: "ลบ .claude/context/ และ .claude/memory/ ที่ไม่ใช้แล้ว"
+  Inform user (in {LANG}): "Removed old .claude/context/ and .claude/memory/ directories"
 
 ### Scenario D: Project with existing CLAUDE.md but no .ctx/
 - Create .ctx/ files (safe, won't conflict)

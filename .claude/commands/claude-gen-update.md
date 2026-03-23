@@ -46,7 +46,25 @@ if [ -f TODO.md ] && ! grep -q "## Roadmap" TODO.md; then
 fi
 ```
 
-### Step 5 — Patch .gitignore
+### Step 5 — Patch CLAUDE.md (rename old commands)
+
+If CLAUDE.md contains old command names, update them:
+
+```bash
+if [ -f CLAUDE.md ]; then
+  sed -i 's|/init-project|/claude-gen-init|g; s|/add-skill|/claude-gen-add-skill|g; s|/sync-skills|/claude-gen-sync-skills|g' CLAUDE.md
+fi
+```
+
+Also fix the `/init` block message if present (should be informational, not blocking):
+
+```bash
+if grep -q "Do NOT run" CLAUDE.md 2>/dev/null; then
+  sed -i 's|Do NOT run `/init`.*|This file is managed by claude-gen framework. Use `/claude-gen-init` to re-initialize, `/claude-gen-update` to update.|' CLAUDE.md
+fi
+```
+
+### Step 6 — Patch .gitignore
 
 Ensure these entries exist (add each one only if missing):
 
@@ -65,7 +83,7 @@ for entry in ".ctx/local.md" ".claude/settings.local.json" ".claude/skills/_libr
 done
 ```
 
-### Step 6 — Cleanup
+### Step 7 — Cleanup
 
 ```bash
 rm -rf /tmp/claude-gen-update
@@ -73,7 +91,7 @@ rm -rf /tmp/claude-gen-update
 
 Always clean up, even if earlier steps failed.
 
-### Step 7 — Report
+### Step 8 — Report
 
 ```
 Framework updated.
@@ -88,7 +106,7 @@ Framework updated.
 
 Not touched: CLAUDE.md, .ctx/, .claude/rules/, active skills
 
-⚠️ พิมพ์ /exit แล้วเปิด claude ใหม่เพื่อ load config ล่าสุด
+⚠️ Important: type /exit then reopen claude to load updated config
 ```
 
 ### What is NOT touched
