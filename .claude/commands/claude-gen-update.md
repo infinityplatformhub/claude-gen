@@ -50,19 +50,14 @@ fi
 
 Read `CLAUDE.md` and fix these issues if found (do NOT use sed — read the file, edit intelligently):
 
-1. **Old command names** — replace anywhere in the file:
-   - `/init-project` → `/claude-gen-init`
-   - `/add-skill` → `/claude-gen-add-skill`
-   - `/sync-skills` → `/claude-gen-sync-skills`
-
-2. **"/init" block message** — if the file says "Do NOT run `/init`", change to:
+1. **"/init" block message** — if the file says "Do NOT run `/init`", change to:
    `This file is managed by claude-gen framework. Use /claude-gen-init to re-initialize, /claude-gen-update to update.`
 
-3. **Old doc rules** — if "Never create docs, reports, or analysis files" exists, change to:
+2. **Old doc rules** — if "Never create docs, reports, or analysis files" exists, change to:
    - `Never generate throwaway files (debug-result.md, benchmark.md, etc.) — report verbally`
    - `Do update existing docs when changes affect them`
 
-4. **Missing pre-commit item** — if pre-commit checklist exists but lacks "No duplicate routes or components", add it
+3. **Missing pre-commit item** — if pre-commit checklist exists but lacks "No duplicate routes or components", add it
 
 Only edit what needs fixing. Do NOT rewrite or restructure CLAUDE.md — preserve all custom content.
 
