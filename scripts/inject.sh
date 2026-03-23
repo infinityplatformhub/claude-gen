@@ -56,6 +56,7 @@ ENTRIES=".ctx/local.md
 .claude/skills/_library/
 .claude/bootstrap/
 .claude-backup/
+.playwright-mcp/
 CLAUDE.local.md"
 
 if [ -f "$IGNORE" ]; then

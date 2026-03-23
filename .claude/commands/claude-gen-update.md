@@ -80,7 +80,7 @@ Do NOT delete or restructure rules files. Do NOT touch custom rules content.
 Ensure these entries exist (add each one only if missing):
 
 ```bash
-for entry in ".ctx/local.md" ".claude/settings.local.json" ".claude/skills/_library/" ".claude/bootstrap/" ".claude-backup/" "CLAUDE.local.md"; do
+for entry in ".ctx/local.md" ".claude/settings.local.json" ".claude/skills/_library/" ".claude/bootstrap/" ".claude-backup/" ".playwright-mcp/" "CLAUDE.local.md"; do
   grep -qF "$entry" .gitignore 2>/dev/null || echo "$entry" >> .gitignore
 done
 ```

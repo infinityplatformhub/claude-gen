@@ -37,17 +37,21 @@
 
 ```
 [ ] Create task: fix/{{TASK_PREFIX}}xxx-short-description
-[ ] Investigate root cause — read code, check logs, understand WHY it breaks
+[ ] Investigate ROOT CAUSE — not the symptom. Ask "why does this happen?" not "how to suppress this?"
+[ ] Trace the full call chain — don't just patch where the error appears
 [ ] Check if same pattern exists elsewhere in the affected area
 [ ] Fix ALL related occurrences (not just the reported symptom)
+[ ] Assess blast radius — what else could break from this fix?
 [ ] Build / compile — verify no errors
 [ ] Test — run tests if available, or manual verification
+[ ] Update docs affected by the fix (API.md, README, CLAUDE.md if commands changed)
 [ ] Review git diff --stat — ensure only relevant files changed
-[ ] Confirm with user: summarize what was wrong + what was fixed
+[ ] Confirm with user: summarize root cause + what was fixed + blast radius
 [ ] User approves → commit ONCE with all fixes
 ```
 
 Key: **never commit a partial fix**. If fixing file A reveals file B also broken → fix both → commit once.
+Key: **never patch symptoms** — if login fails, don't just reset the DB. Find WHY it fails (wrong hash? expired token? missing migration?).
 
 ---
 
@@ -168,6 +172,21 @@ Use git worktrees when agents write code in parallel to avoid conflicts.
 
 ---
 
+## Playwright / Browser Screenshots
+
+Never save screenshots to project root. Always use `.playwright-mcp/` directory:
+
+```bash
+# Correct — contained in dedicated directory
+filename: ".playwright-mcp/screenshot-name.png"
+
+# Wrong — pollutes project root
+filename: "screenshot.png"
+filename: "tmp/screenshot.png"
+```
+
+---
+
 ## File Naming Convention
 
 **Rules:**
@@ -193,9 +212,32 @@ debug-scripts/
 
 ## What to ALWAYS Do (Without Being Asked)
 
-- **Update existing docs** when your changes affect them (README, TODO.md, CHANGELOG, docs/)
+- **Update existing docs** when your changes affect them — this is critical:
+  - Changed Makefile commands → update README, CLAUDE.md Dev Commands
+  - Changed API endpoints → update API docs
+  - Changed architecture → update project-reference.md
+  - Changed env vars → update .env.example first
+  - Changed protocol/data format → update relevant docs
 - **Update .ctx/active-tasks.md** and `.ctx/recent-changes.md` as part of task lifecycle
 - **Update .ctx/learned.md** when you discover a new gotcha
+
+---
+
+## Analyzing Requirements
+
+Before implementing what user asks, think critically:
+
+1. **Understand the real need** — "add OAuth" might mean "users want faster login", which has multiple solutions
+2. **Assess trade-offs** — if the request conflicts with security, performance, or existing architecture, say so
+3. **Propose alternatives** — if there's a better way, present options:
+   ```
+   You asked for X. I can do that, but consider:
+   - Option A: X as requested — {pros/cons}
+   - Option B: Y instead — {pros/cons}
+   Which do you prefer?
+   ```
+4. **Check blast radius** — will this change break other parts of the system?
+5. **Don't blindly execute** — if something seems wrong or risky, ask before proceeding
 
 ---
 

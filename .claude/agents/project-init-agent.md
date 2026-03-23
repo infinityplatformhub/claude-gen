@@ -332,6 +332,7 @@ Check .gitignore exists and has ALL of these:
 .claude/skills/_library/
 .claude/bootstrap/
 .claude-backup/
+.playwright-mcp/
 CLAUDE.local.md
 ```
 
