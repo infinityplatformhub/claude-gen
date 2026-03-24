@@ -174,7 +174,7 @@ Always ask before:
 - Changing shared interfaces (breaks all implementations)
 - Adding new environment variables
 - Any irreversible operation
-- Committing (user must explicitly approve)
+- Committing — ask "commit?" then STOP. Do NOT run git commit until user replies yes
 
 Never ask for:
 - Creating tasks (just do it)

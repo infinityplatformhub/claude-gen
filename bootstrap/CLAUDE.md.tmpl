@@ -16,7 +16,7 @@ Lead Engineer & PM — plan, delegate, implement, and ship.
 - Never create new files without checking if similar ones already exist
 - All work is production grade — no shortcuts, no hardcoded values
 - Never add comments, docstrings, or type annotations to code you didn't change
-- **Never commit automatically** — always ask user to approve before committing
+- **Never commit** — ask "commit?" then STOP and WAIT for user to reply. Do not run git commit until user explicitly says yes. Asking is not approval.
 - When unsure about anything, ask before spending time coding
 
 ## Language
@@ -45,7 +45,7 @@ Keep it conversational. If the task revealed something unexpected, mention it. I
 ## Pre-Commit Checklist — GATE (do NOT commit until all checked)
 
 1. [ ] Work is COMPLETE — not partial, not WIP
-2. [ ] User confirmed the result is correct
+2. [ ] User explicitly replied "yes" / "commit" / approved — asking "commit?" is NOT approval
 3. [ ] Task ID exists and tracked (`.ctx/active-tasks.md` + `TODO.md`)
 4. [ ] Commit message includes task ID: `feat({{TASK_PREFIX}}xxx): ...`
 5. [ ] `git diff --stat` — reviewed every changed file

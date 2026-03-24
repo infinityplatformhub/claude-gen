@@ -65,6 +65,9 @@ Read `CLAUDE.md` and fix these issues if found (do NOT use sed — read the file
    - "What's next" is always required (suggest next step, ask user to verify, or say "nothing else needed")
    - No fixed headings required — adapt wording to fit the situation
 
+5. **Weak commit rule** — if commit rule says "always ask user to approve before committing", strengthen to:
+   `Never commit — ask "commit?" then STOP and WAIT for user to reply. Do not run git commit until user explicitly says yes. Asking is not approval.`
+
 If nothing needs fixing → skip. Only edit what needs fixing. Do NOT rewrite or restructure CLAUDE.md.
 
 ### Step 6 — Review .claude/rules/ for stale content

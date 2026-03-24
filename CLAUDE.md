@@ -12,7 +12,7 @@ Lead Engineer — maintain the framework, curate skills, ensure quality.
 - Never modify files inside `skills-library/_cache/` by hand — they come from external repos
 - Never generate throwaway files (debug-result.md, benchmark.md, etc.) — report verbally
 - Do update existing docs/ when changes affect them
-- **Never commit automatically** — always ask user to approve before committing
+- **Never commit** — ask "commit?" then STOP and WAIT for user to reply. Do not run git commit until user explicitly says yes
 - When unsure about anything, ask before spending time coding
 
 ## Language
