@@ -70,6 +70,30 @@ else
   done
 fi
 
+# .dockerignore (if Docker is used)
+if [ -f "$TARGET/Dockerfile" ] || [ -f "$TARGET/docker-compose.yml" ] || [ -f "$TARGET/docker-compose.yaml" ] || [ -f "$TARGET/.dockerignore" ]; then
+  DKIGNORE="$TARGET/.dockerignore"
+  DK_ENTRIES=".ctx/
+.claude/
+.claude-backup/
+.playwright-mcp/
+CLAUDE.md
+CLAUDE.local.md
+TODO.md
+.git"
+
+  if [ -f "$DKIGNORE" ]; then
+    for entry in $DK_ENTRIES; do
+      grep -qF "$entry" "$DKIGNORE" || printf "%s\n" "$entry" >> "$DKIGNORE"
+    done
+  else
+    printf "# Claude Framework\n" > "$DKIGNORE"
+    for entry in $DK_ENTRIES; do
+      printf "%s\n" "$entry" >> "$DKIGNORE"
+    done
+  fi
+fi
+
 # Summary
 CACHED=$(find "$TARGET/.claude/skills/_library/_cache" -maxdepth 1 -type d | tail -n +2 | wc -l)
 LOCAL=$(find "$TARGET/.claude/skills/_library" -maxdepth 1 -type d -not -name "_cache" | tail -n +2 | wc -l)

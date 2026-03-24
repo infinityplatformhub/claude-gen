@@ -174,6 +174,31 @@ else
 fi
 ok ".gitignore updated"
 
+# ─── Update .dockerignore (if Docker is used) ────────────────────────
+if [ -f "$TARGET/Dockerfile" ] || [ -f "$TARGET/docker-compose.yml" ] || [ -f "$TARGET/docker-compose.yaml" ] || [ -f "$TARGET/.dockerignore" ]; then
+  DKIGNORE="$TARGET/.dockerignore"
+  DK_ENTRIES=".ctx/
+.claude/
+.claude-backup/
+.playwright-mcp/
+CLAUDE.md
+CLAUDE.local.md
+TODO.md
+.git"
+
+  if [ -f "$DKIGNORE" ]; then
+    for entry in $DK_ENTRIES; do
+      grep -qF "$entry" "$DKIGNORE" || printf "%s\n" "$entry" >> "$DKIGNORE"
+    done
+  else
+    printf "# Claude Framework\n" > "$DKIGNORE"
+    for entry in $DK_ENTRIES; do
+      printf "%s\n" "$entry" >> "$DKIGNORE"
+    done
+  fi
+  ok ".dockerignore updated"
+fi
+
 # ─── Summary ──────────────────────────────────────────────────────────
 echo ""
 echo "============================================"

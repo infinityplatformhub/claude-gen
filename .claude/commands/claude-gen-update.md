@@ -47,28 +47,31 @@ if [ -f TODO.md ] && ! grep -q "## Roadmap" TODO.md; then
 fi
 ```
 
-### Step 5 — Patch CLAUDE.md
+### Step 5 — Patch CLAUDE.md (MANDATORY — do not skip)
 
-Read `CLAUDE.md` and fix these issues if found (do NOT use sed — read the file, edit intelligently):
+You MUST read `CLAUDE.md` and check EVERY item below. Do NOT skip this step.
 
-1. **"/init" block message** — if the file says "Do NOT run `/init`", change to:
+For each item: read the file, check if the issue exists, fix if needed, report what you did.
+
+1. **"/init" block message** — look for "Do NOT run `/init`" → change to:
    `This file is managed by claude-gen framework. Use /claude-gen-init to re-initialize, /claude-gen-update to update.`
 
-2. **Old doc rules** — if "Never create docs, reports, or analysis files" exists, change to:
+2. **Old doc rules** — look for "Never create docs, reports, or analysis files" → change to:
    - `Never generate throwaway files (debug-result.md, benchmark.md, etc.) — report verbally`
    - `Do update existing docs when changes affect them`
 
-3. **Missing pre-commit item** — if pre-commit checklist exists but lacks "No duplicate routes or components", add it
+3. **Missing pre-commit item** — look for pre-commit checklist, check if "No duplicate routes or components" exists → add if missing
 
-4. **Old status report format** — if status report uses rigid numbered format with "Issues found" and "Next — follow-up (only if applicable)", update to natural conversational style:
+4. **Old status report** — look for "Issues found" or "Next — follow-up (only if applicable)" → update to:
    - Always cover: what happened/why, what was done, what's next
-   - "What's next" is always required (suggest next step, ask user to verify, or say "nothing else needed")
-   - No fixed headings required — adapt wording to fit the situation
+   - "What's next" is always required
+   - No fixed headings — adapt wording naturally
 
-5. **Weak commit rule** — if commit rule says "always ask user to approve before committing", strengthen to:
+5. **Weak commit rule** — look for "always ask user to approve before committing" or "Never commit automatically" → change to:
    `Never commit — ask "commit?" then STOP and WAIT for user to reply. Do not run git commit until user explicitly says yes. Asking is not approval.`
 
-If nothing needs fixing → skip. Only edit what needs fixing. Do NOT rewrite or restructure CLAUDE.md.
+Report each item: "checked — {fixed / already correct}"
+Do NOT rewrite or restructure CLAUDE.md — only fix the items above.
 
 ### Step 6 — Review .claude/rules/ for stale content
 
@@ -93,13 +96,25 @@ for entry in ".ctx/local.md" ".claude/settings.local.json" ".claude/skills/_libr
 done
 ```
 
-### Step 8 — Cleanup
+### Step 8 — Patch .dockerignore
+
+If project has `Dockerfile` or `docker-compose*.yml` or `.dockerignore`, ensure these entries exist:
+
+```bash
+if [ -f Dockerfile ] || [ -f docker-compose.yml ] || [ -f docker-compose.yaml ] || [ -f .dockerignore ]; then
+  for entry in ".ctx/" ".claude/" ".claude-backup/" ".playwright-mcp/" "CLAUDE.md" "CLAUDE.local.md" "TODO.md" ".git"; do
+    grep -qF "$entry" .dockerignore 2>/dev/null || echo "$entry" >> .dockerignore
+  done
+fi
+```
+
+### Step 9 — Cleanup
 
 ```bash
 rm -rf /tmp/claude-gen-update
 ```
 
-### Step 9 — Report
+### Step 10 — Report
 
 ```
 Framework updated.

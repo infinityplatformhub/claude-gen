@@ -338,6 +338,22 @@ CLAUDE.local.md
 
 Add missing entries. Create .gitignore if not exists.
 
+### .dockerignore
+
+If `.dockerignore` exists OR project has `Dockerfile`/`docker-compose*.yml`, ensure these entries exist:
+```
+.ctx/
+.claude/
+.claude-backup/
+.playwright-mcp/
+CLAUDE.md
+CLAUDE.local.md
+TODO.md
+.git
+```
+
+Add missing entries. Create .dockerignore if Dockerfile exists but .dockerignore doesn't.
+
 ---
 
 ## Phase 9 — Report
