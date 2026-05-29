@@ -28,7 +28,7 @@
 [ ] Review git diff --stat
 [ ] Update .ctx/active-tasks.md status to Done
 [ ] Move to .ctx/recent-changes.md
-[ ] Ask user to approve commit
+[ ] Commit per CLAUDE.md Commit Policy (manual: ask first · auto: commit when gate passes)
 ```
 
 ---
@@ -46,8 +46,8 @@
 [ ] Test — run tests if available, or manual verification
 [ ] Update docs affected by the fix (API.md, README, CLAUDE.md if commands changed)
 [ ] Review git diff --stat — ensure only relevant files changed
-[ ] Confirm with user: summarize root cause + what was fixed + blast radius
-[ ] User approves → commit ONCE with all fixes
+[ ] Summarize root cause + what was fixed + blast radius
+[ ] Commit ONCE with all fixes, per CLAUDE.md Commit Policy (manual: ask first · auto: commit when gate passes)
 ```
 
 Key: **never commit a partial fix**. If fixing file A reveals file B also broken → fix both → commit once.
@@ -64,7 +64,7 @@ Key: **never patch symptoms** — if login fails, don't just reset the DB. Find 
 [ ] Ensure tests still pass after refactor
 [ ] No behavior changes — refactor only
 [ ] Review git diff --stat
-[ ] Confirm with user → commit
+[ ] Commit per CLAUDE.md Commit Policy (manual: ask first · auto: commit when gate passes)
 ```
 
 ---

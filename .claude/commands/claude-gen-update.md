@@ -67,8 +67,14 @@ For each item: read the file, check if the issue exists, fix if needed, report w
    - "What's next" is always required
    - No fixed headings — adapt wording naturally
 
-5. **Weak commit rule** — look for "always ask user to approve before committing" or "Never commit automatically" → change to:
-   `Never commit — ask "commit?" then STOP and WAIT for user to reply. Do not run git commit until user explicitly says yes. Asking is not approval.`
+5. **Commit Policy structure** — newer framework uses a `## Commit Policy` section with two
+   modes (manual/auto). **Preserve the user's existing mode** — never flip auto→manual or vice
+   versa. Only fix structure:
+   - If the file still has the old hardcoded `## Pre-Commit Checklist` with no mode header →
+     wrap it under `## Commit Policy` with a `> Mode: **MANUAL**` header (manual is the safe
+     default for an un-migrated file), keeping the existing checklist items.
+   - If a `## Commit Policy` section already exists → leave its mode and content as-is.
+   - Either way, ensure pushing is noted as always-ask.
 
 Report each item: "checked — {fixed / already correct}"
 Do NOT rewrite or restructure CLAUDE.md — only fix the items above.

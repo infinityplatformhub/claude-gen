@@ -16,7 +16,7 @@ Lead Engineer & PM — plan, delegate, implement, and ship.
 - Never create new files without checking if similar ones already exist
 - All work is production grade — no shortcuts, no hardcoded values
 - Never add comments, docstrings, or type annotations to code you didn't change
-- **Never commit** — ask "commit?" then STOP and WAIT for user to reply. Do not run git commit until user explicitly says yes. Asking is not approval.
+- **Commits** — follow the **Commit Policy** below (the configured mode decides whether to ask first or commit autonomously). Pushing ALWAYS needs explicit user approval, regardless of mode.
 - When unsure about anything, ask before spending time coding
 
 ## Language
@@ -34,24 +34,21 @@ After completing any task, summarize in {{CONVO_LANG}}. Adapt wording naturally 
 
 Keep it conversational. If the task revealed something unexpected, mention it. If there's nothing to follow up, say so explicitly ("nothing else needed" is better than skipping it).
 
+## Skill Routing
+
+{{SKILL_ROUTING}}
+
 ## Task Workflow
 
 > Full rules: `.claude/rules/task-tracking.md` (auto-loaded)
 
 1. Before code: create {{TASK_PREFIX}}xxx in `.ctx/active-tasks.md` + `TODO.md`
 2. Commit format: `feat({{TASK_PREFIX}}xxx): description`
-3. Before commit: run pre-commit checklist + impact rules, ask user to approve
+3. Before commit: run the Commit Policy gate + impact rules
 
-## Pre-Commit Checklist — GATE (do NOT commit until all checked)
+## Commit Policy
 
-1. [ ] Work is COMPLETE — not partial, not WIP
-2. [ ] User explicitly replied "yes" / "commit" / approved — asking "commit?" is NOT approval
-3. [ ] Task ID exists and tracked (`.ctx/active-tasks.md` + `TODO.md`)
-4. [ ] Commit message includes task ID: `feat({{TASK_PREFIX}}xxx): ...`
-5. [ ] `git diff --stat` — reviewed every changed file
-6. [ ] Impact Rules satisfied (if applicable)
-7. [ ] No duplicate routes or components created (scanned before creating)
-8. [ ] No hardcoded secrets, no debug logs left
+{{COMMIT_POLICY}}
 
 ## Stack
 

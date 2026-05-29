@@ -15,12 +15,12 @@ allowed-tools: Read, Write, Bash, Glob, Grep, LS
 Setup Plan (9 steps):
 
   ✅ 1. Language → {LANG}
-  ✅ 2. Discover codebase → {profile} detected
+  ✅ 2. Discover + confirm prefs (skill-auto? commit-mode?)
   → 3. Copy skills for {profile}
   · 4. Generate custom skills (arch + workflow)
   · 5. Merge .ctx/ files
-  · 6. Create .claude/rules/
-  · 7. Generate/merge CLAUDE.md
+  · 6. Create .claude/rules/ (+ settings.json hook if skill-auto)
+  · 7. Generate/merge CLAUDE.md (commit policy + skill routing)
   · 8. Update .gitignore
   · 9. Report
 ```
@@ -127,9 +127,19 @@ I need a few more details:
   2. ENV variable prefix (e.g. APP_, MYAPP_, CPT_): ___
   3. Task ID prefix (e.g. T-, TASK-, #): ___  [default: T-]
   4. Any active tasks right now? (describe briefly or "none"): ___
+  5. Auto-skill activation? (set up routing table + UserPromptSubmit hook so skills
+     are surfaced every prompt)  [default: yes]
+       • yes — add Skill Routing table to CLAUDE.md + a hook in .claude/settings.json
+       • no  — skills stay model-invoked only (a short manual note goes in CLAUDE.md)
+  6. Commit mode?  [default: manual]
+       • manual — Claude asks "commit?" and waits for your approval every time
+       • auto   — Claude commits autonomously once work is complete + verified
+                  (writes detailed-but-concise messages, splits commits by logical
+                   change). Pushing still always asks.
 ```
 
-Max 4 questions. If something can be inferred, infer it.
+Ask only what cannot be inferred — typically 4–6 short questions. Infer anything detectable.
+Store answers as {AUTO_SKILL} (yes/no) and {COMMIT_MODE} (manual/auto); both feed Phases 6–7.
 
 ---
 
@@ -288,6 +298,47 @@ Generate from codebase reading in Phase 1:
 ### .claude/rules/{stack}.md
 Copy from .claude/bootstrap/rules/stacks/{detected_stack}.md
 
+### .claude/settings.json — ONLY if {AUTO_SKILL} = yes
+
+This hook surfaces the project's skills to the model on every prompt (skills are
+model-invoked, so this nudge raises the odds the right one fires).
+
+1. **Read first** if the file exists — MERGE, never clobber existing keys/hooks.
+   If a `UserPromptSubmit` skill-reminder hook already exists, replace just that one.
+2. Build the reminder string from the ACTUAL skill list resolved in Phases 3–4
+   (copied skills + the 2 custom skills). One line, comma-separated, with a 2–4 word
+   hint per skill. End with: "Routing table in CLAUDE.md > Skill Routing."
+3. Write this shape (merge into existing if present):
+
+```json
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"UserPromptSubmit\",\"additionalContext\":\"Project skills (invoke via the Skill tool when a task fits): <SKILL LIST>. Routing table in CLAUDE.md > Skill Routing.\"}}'",
+            "suppressOutput": true
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+4. Validate after writing:
+   `jq -e '.hooks.UserPromptSubmit[] | .hooks[] | select(.type=="command") | .command' .claude/settings.json`
+   then run the command's body and confirm it emits valid JSON with `.hookSpecificOutput.additionalContext`.
+5. `.claude/settings.json` is committed (team-wide). Do NOT gitignore it (only
+   `settings.local.json` is ignored, per Phase 8).
+6. **Watcher caveat** — a settings.json created mid-session isn't picked up until the
+   config reloads. Note in Phase 9 that the `/exit` + reopen step activates it.
+
+If {AUTO_SKILL} = no → skip this file entirely.
+
 ---
 
 ## Phase 7 — Generate CLAUDE.md
@@ -304,8 +355,91 @@ Generate from .claude/bootstrap/CLAUDE.md.tmpl. Replace ALL placeholders:
 | `{{STACK_SUMMARY}}` | Generate from detected stack (Phase 1) |
 | `{{DEV_COMMANDS}}` | Generate from Makefile, package.json scripts, or detected tools. Include: build, test (all + single), lint, dev server. If none detected, generate sensible defaults for the stack |
 | `{{IMPACT_RULES}}` | Generate full markdown table from detected stack. Example: `\| backend/models/*.go \| frontend/types/*.ts \| Run type-checker \|`. If new project, generate a placeholder table with column headers only |
+| `{{SKILL_ROUTING}}` | Fill per {AUTO_SKILL} — see **Skill Routing block** below |
+| `{{COMMIT_POLICY}}` | Fill per {COMMIT_MODE} — see **Commit Policy block** below |
 
 Verify NO `{{...}}` placeholders remain in the final CLAUDE.md.
+
+### Skill Routing block (fills `{{SKILL_ROUTING}}`)
+
+Build a markdown table mapping task type → skill, using the ACTUAL resolved skills
+(Phases 3–4). One row per skill; the "when working on…" cell is a 3–8 word trigger.
+Prepend this line (keep it whether or not the hook exists):
+
+> Skills are **model-invoked**, not auto-run — invoke the matching skill via the Skill
+> tool when a task fits.{if AUTO_SKILL=yes: " A UserPromptSubmit hook reinforces this each prompt."}
+
+Example shape:
+
+```
+| When working on… | Invoke skill |
+|------------------|--------------|
+| Go backend — concurrency, services, idioms | `golang-pro` |
+| DB migrations / schema / RLS | `migration-database` |
+| Multi-tenant boundary, auth, OWASP review | `security-audit` |
+| Starting / tracking / committing a task | `{task-prefix}-workflow` |
+| Architecture, module boundaries, porting | `{project}-arch` |
+```
+
+If {AUTO_SKILL} = no, still emit the table (it's a passive nudge), just drop the hook sentence.
+
+### Commit Policy block (fills `{{COMMIT_POLICY}}`)
+
+Pick ONE block by {COMMIT_MODE}.
+
+**If {COMMIT_MODE} = manual** (default — paste verbatim, sub `{{TASK_PREFIX}}`):
+
+```
+> Mode: **MANUAL** — never commit without explicit approval.
+
+When work is complete, run the gate, then ask "commit?" and STOP — wait for the user to
+reply "yes"/"commit". Asking is NOT approval. Pushing always needs separate approval.
+
+Gate — do NOT commit until ALL checked:
+1. [ ] Work COMPLETE — not partial/WIP
+2. [ ] User explicitly approved ("yes"/"commit")
+3. [ ] Task ID tracked (`.ctx/active-tasks.md` + `TODO.md`)
+4. [ ] Message has task ID: `feat({{TASK_PREFIX}}xxx): ...`
+5. [ ] `git diff --stat` reviewed — only intended files
+6. [ ] Impact Rules satisfied
+7. [ ] No duplicate routes/components; no hardcoded secrets; no debug logs
+```
+
+**If {COMMIT_MODE} = auto** (paste verbatim, sub `{{TASK_PREFIX}}`):
+
+```
+> Mode: **AUTO** — commit autonomously when the gate passes; no prompt needed.
+
+The user has pre-approved committing. Commit once work is COMPLETE + verified — do not
+ask. NEVER push without explicit approval. Never commit to "save progress".
+
+Gate — commit only when ALL true (this replaces user approval):
+1. [ ] Work COMPLETE — not partial/WIP
+2. [ ] Builds/compiles clean; tests pass (if test infra exists)
+3. [ ] Task ID tracked (`.ctx/active-tasks.md` + `TODO.md`)
+4. [ ] `git diff --stat` reviewed — only intended files
+5. [ ] Impact Rules satisfied
+6. [ ] No hardcoded secrets, no debug logs left
+If any box fails → keep working, do NOT commit.
+
+Message quality — detailed but concise:
+- Subject: `type({{TASK_PREFIX}}xxx): imperative summary` (≤ ~70 chars)
+- Body (omit for trivial commits): 1–4 bullets covering WHAT changed + WHY. Capture the
+  meaningful decisions; skip the obvious. No file-by-file narration.
+- A reviewer should grasp intent without reading the diff.
+
+Commit splitting — judgment, not one-size. Split by logical change, not by file/time:
+- ONE commit when changes serve a single purpose (feature + its tests + docs; a fix + all
+  its related occurrences; a wide refactor with one intent).
+- SEPARATE commits when concerns are unrelated:
+  · refactor/rename vs behavior change → refactor first, then feature
+  · incidental bugfix found along the way → its own commit + its own task ID
+  · schema/migration vs the code using it → often separate (migration revertable alone)
+  · formatting/lint-only churn vs logic → separate so review stays clean
+- Order prerequisites first (migration → model → handler → UI); each commit builds green.
+- When unsure, prefer the fewest commits that each tell one coherent story and each
+  build/pass on their own.
+```
 
 ### Existing CLAUDE.md (no framework):
 - Read existing file entirely
@@ -365,18 +499,22 @@ Print summary in {LANG}. Example in English:
 
   Framework initialized: {project name}
 
-  Stack   : {profile}
-  Skills  : {count from Phase 3} + {count from Phase 4} custom
-  Rules   : {count} + {preserved count} preserved
-  CLAUDE  : {created / updated / merged}
+  Stack       : {profile}
+  Skills      : {count from Phase 3} + {count from Phase 4} custom
+  Rules       : {count} + {preserved count} preserved
+  CLAUDE      : {created / updated / merged}
+  Skill-auto  : {on → routing table + settings.json hook | off → routing table only}
+  Commit mode : {manual → asks first | auto → commits when gate passes}
 
   Please verify:
     - .ctx/active-tasks.md — tasks are correct
-    - CLAUDE.md — existing content preserved
+    - CLAUDE.md — existing content preserved + Commit Policy matches your choice
+    {if AUTO_SKILL=yes: - .claude/settings.json — UserPromptSubmit hook present}
     {if Scenario C: - Old .claude/context/ and .claude/memory/ have been removed}
 
   ⚠️ Important: type /exit then reopen claude
-  so the new CLAUDE.md, rules, and skills are loaded into the session.
+  so the new CLAUDE.md, rules, skills{if AUTO_SKILL=yes: , and settings.json hook} are
+  loaded into the session. {if AUTO_SKILL=yes: The hook only activates after this reload.}
 ```
 
 Translate to {LANG} at runtime.

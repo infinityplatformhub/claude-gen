@@ -52,7 +52,8 @@ Add to BOTH files:
 
 ### 3. Before Commit
 
-Run through CLAUDE.md Pre-commit Checklist. Every box must be checked.
+Run through the CLAUDE.md **Commit Policy** gate. Every box must pass before committing
+(in manual mode the final box is the user's explicit approval; in auto mode the gate replaces it).
 
 Update `.ctx/active-tasks.md`:
 ```markdown
@@ -174,9 +175,10 @@ Always ask before:
 - Changing shared interfaces (breaks all implementations)
 - Adding new environment variables
 - Any irreversible operation
-- Committing — ask "commit?" then STOP. Do NOT run git commit until user replies yes
+- Committing — follow the CLAUDE.md **Commit Policy** (manual mode: ask "commit?" then STOP and wait for yes; auto mode: commit once the gate passes, no prompt)
+- Pushing — ALWAYS ask first, in every mode
 
 Never ask for:
 - Creating tasks (just do it)
-- Deciding commit scope/timing (PM decides, user approves)
+- Deciding commit scope/timing (PM decides; in manual mode the user still approves the commit itself)
 - Opening subtasks when scope grows (just do it, inform user)
