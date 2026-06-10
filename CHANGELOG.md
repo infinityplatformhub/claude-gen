@@ -1,5 +1,36 @@
 # Changelog
 
+## v3.0 — 2026-06-10
+
+Theme: rules enforced by hooks, not agent memory. Token budgets on everything auto-imported.
+
+- **Enforcement hooks** (`bootstrap/hooks/`, deployed to `.claude/hooks/` on init/update):
+  - `ctx-budget.sh` (PostToolUse) — byte budgets on auto-imported files: active-tasks 2 KB,
+    recent-changes 3 KB, learned 6 KB, TODO.md 16 KB. Over budget → blocks until trimmed.
+  - `report-guard.sh` (Stop) — a work turn (≥2 tool calls) cannot end without a status
+    report closing with a `→ next-step` line. Blocks once, never loops.
+  - `skill-router.sh` (UserPromptSubmit) — replaces the v1.1 inline-echo hook with a real
+    script embedding the project's skill list (~60 tokens/prompt).
+- **Byte-caps replace count-caps** — caps on entry counts failed in practice (entries grew
+  unbounded); the real cost is bytes/tokens, so budgets are now bytes, hook-enforced.
+- **One-line entry format everywhere** — `.ctx/` + TODO.md entries are single lines; full
+  prose detail has exactly one home (`docs/changelog.md`). "Persist terse, report verbose."
+- **`.ctx/local.md` no longer auto-imported** — it's a machine-local scratchpad with low
+  per-session relevance; read on demand.
+- **CLAUDE.md template: Focus Discipline + Token Discipline sections** — one task at a time,
+  unrelated findings become TODO one-liners, no drive-by fixes; status reports end with `→ `.
+- **Init flow reordered** — Phase 0 asks ALL preferences upfront in one message (language,
+  commit mode, auto-skill), then locks every subsequent message to the chosen language
+  (mixed-language follow-ups after choosing Thai was a recurring bug). Phase 2 questions
+  all ship with detected defaults so "ok to all" works.
+- **`/claude-gen-update`** — deploys/refreshes hooks, migrates the old inline-echo skill
+  hook, refreshes framework-owned rules (task-tracking, dev-workflow) so byte budgets reach
+  existing projects, and patches CLAUDE.md (local.md import removal, new sections, `→ `
+  report marker, `<!-- claude-gen v3 -->` version marker).
+- **Update cleanup step** — over-budget `.ctx/` + TODO.md files are compressed immediately
+  during update (archive prose to changelog → rewrite as one-liners), not left for the
+  hook to catch mid-task.
+
 ## v1.1 — 2026-05-30
 
 - **Init prompt: auto-skill activation** — opt-in during `/claude-gen-init`. Adds a Skill

@@ -6,11 +6,10 @@
 
 ## Start of Session
 
-1. Read `.ctx/active-tasks.md` — what's in progress?
-2. Read `.ctx/recent-changes.md` — what was done recently?
-3. Check `.ctx/learned.md` — any gotchas to remember?
-4. If context was compacted → also read `TODO.md` to rebuild full backlog
-5. Ask user what to work on if unclear
+1. `.ctx/active-tasks.md`, `recent-changes.md`, `learned.md` are ALREADY auto-imported —
+   use them, do NOT re-read with tools
+2. If context was compacted → read `TODO.md` once to rebuild full backlog
+3. Ask user what to work on if unclear
 
 ---
 
@@ -218,8 +217,8 @@ debug-scripts/
   - Changed architecture → update project-reference.md
   - Changed env vars → update .env.example first
   - Changed protocol/data format → update relevant docs
-- **Update .ctx/active-tasks.md** and `.ctx/recent-changes.md` as part of task lifecycle
-- **Update .ctx/learned.md** when you discover a new gotcha
+- **Update .ctx/active-tasks.md** and `.ctx/recent-changes.md` as part of task lifecycle — one-line entries only (byte budgets are hook-enforced)
+- **Update .ctx/learned.md** when you discover a new gotcha — one line per gotcha
 
 ---
 

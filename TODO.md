@@ -12,4 +12,5 @@
 
 ## Done
 
+- ✅ Framework v3.0 — enforcement hooks (ctx-budget, report-guard, skill-router), byte-cap budgets, one-line entry format, preferences-first init, language lock
 - ✅ Framework v2.1 shipped — 18 skills, 12 profiles, installer, docs

@@ -14,12 +14,12 @@ allowed-tools: Read, Write, Bash, Glob, Grep, LS
 ```
 Setup Plan (9 steps):
 
-  ✅ 1. Language → {LANG}
-  ✅ 2. Discover + confirm prefs (skill-auto? commit-mode?)
+  ✅ 1. Preferences → {LANG} · commit: {COMMIT_MODE} · auto-skill: {AUTO_SKILL}
+  ✅ 2. Discover + confirm project details
   → 3. Copy skills for {profile}
   · 4. Generate custom skills (arch + workflow)
   · 5. Merge .ctx/ files
-  · 6. Create .claude/rules/ (+ settings.json hook if skill-auto)
+  · 6. Create .claude/rules/ + hooks + settings.json
   · 7. Generate/merge CLAUDE.md (commit policy + skill routing)
   · 8. Update .gitignore
   · 9. Report
@@ -42,18 +42,35 @@ Do NOT repeat the full plan on every phase. Just the heading + results.
 
 ---
 
-## Phase 0 — Language Setup (First Thing)
+## Phase 0 — Preferences (First Thing, Before ANY Discovery)
 
-Before doing anything else, ask the user ONE question:
+Every decision the user can make upfront is asked HERE — never saved for later phases.
+Ask these 3 questions together in ONE message (this is the only English message allowed;
+include short Thai hints so it's readable either way):
 
-"What language should I use when talking to you?
-  1. English
-  2. Thai (ภาษาไทย)
-  3. Other: ___"
+```
+1. Language for our conversations?
+     1. English   2. Thai (ภาษาไทย)   3. Other: ___
 
-Store the answer as {LANG}. Use this language for ALL communication
-throughout this session and generate all CLAUDE.md user-facing text in {LANG}.
-Code, comments, commits, and docs always stay in English regardless.
+2. Commit mode?  [default: manual]
+     • manual — I ask "commit?" and wait for your approval every time
+     • auto   — I commit autonomously once work is complete + verified
+                (pushing still ALWAYS asks, in both modes)
+
+3. Auto-skill activation?  [default: yes]
+     • yes — install a hook that surfaces the right skill on every prompt
+     • no  — skills stay model-invoked only
+```
+
+Store as {LANG}, {COMMIT_MODE}, {AUTO_SKILL}.
+
+### Language lock — read carefully
+
+From the moment {LANG} is known, EVERY user-facing output switches to {LANG}:
+every question, plan display, progress note, confirmation, and the final report.
+Asking a follow-up question in English after the user chose Thai is a BUG — before
+sending any message, check: "is this in {LANG}?" Only code, file contents, commit
+messages, and docs stay in English.
 
 ---
 
@@ -109,9 +126,10 @@ If a language/framework is detected but has NO matching profile in `_index.json`
 
 ---
 
-## Phase 2 — Confirm (Minimal Questions)
+## Phase 2 — Confirm (Minimal Questions, in {LANG})
 
-Show auto-detected summary and ask ONLY what cannot be detected:
+Show auto-detected summary and ask ONLY what cannot be detected. The example below is
+English — render the ENTIRE message (summary, labels, questions) in {LANG}:
 
 ```
 Here's what I found:
@@ -123,23 +141,15 @@ Here's what I found:
   {if unmatched stacks: "Unmatched: Java (Spring) — no profile, will use universal skills"}
 
 I need a few more details:
-  1. Human-readable project name: ___
-  2. ENV variable prefix (e.g. APP_, MYAPP_, CPT_): ___
+  1. Human-readable project name: ___  [suggest detected name as default]
+  2. ENV variable prefix (e.g. APP_, MYAPP_, CPT_): ___  [suggest from .env.example if found]
   3. Task ID prefix (e.g. T-, TASK-, #): ___  [default: T-]
   4. Any active tasks right now? (describe briefly or "none"): ___
-  5. Auto-skill activation? (set up routing table + UserPromptSubmit hook so skills
-     are surfaced every prompt)  [default: yes]
-       • yes — add Skill Routing table to CLAUDE.md + a hook in .claude/settings.json
-       • no  — skills stay model-invoked only (a short manual note goes in CLAUDE.md)
-  6. Commit mode?  [default: manual]
-       • manual — Claude asks "commit?" and waits for your approval every time
-       • auto   — Claude commits autonomously once work is complete + verified
-                  (writes detailed-but-concise messages, splits commits by logical
-                   change). Pushing still always asks.
 ```
 
-Ask only what cannot be inferred — typically 4–6 short questions. Infer anything detectable.
-Store answers as {AUTO_SKILL} (yes/no) and {COMMIT_MODE} (manual/auto); both feed Phases 6–7.
+Ask only what cannot be inferred — offer a detected default for every question so the
+user can answer "ok to all". Preferences ({LANG}, {COMMIT_MODE}, {AUTO_SKILL}) were
+already collected in Phase 0 — NEVER re-ask them here.
 
 ---
 
@@ -217,50 +227,51 @@ Write these WITHOUT permission prompt (outside .claude/):
 
 **IMPORTANT: If .ctx/ files already exist, MERGE — do not overwrite.**
 
-### .ctx/active-tasks.md
-- **If exists**: read existing content. Preserve any active tasks. Add framework header if missing.
+All `.ctx/` files use ONE-LINE entries (byte budgets are hook-enforced — see
+bootstrap/rules/task-tracking.md). If merging existing files that have verbose
+multi-line entries, COMPRESS each to one line as part of the merge.
+
+### .ctx/active-tasks.md (budget 2 KB)
+- **If exists**: preserve tasks, compress each to one line. Add framework header if missing.
 - **If not exists**: create fresh:
 ```markdown
 # Active Tasks — {project name}
-> Current WIP. Max 5 active tasks.
-> Full rules: .claude/rules/task-tracking.md
+> One line per task, max 5. Budget 2 KB (hook-enforced). Rules: .claude/rules/task-tracking.md
 
 ## In Progress
-{if user mentioned active tasks in Phase 2 → create task entries}
+{if user mentioned active tasks in Phase 2 → one line each: - 🔄 **T-xxx** title · goal · blockers: none}
 {else → "None — project initializing"}
 
 ## Blocked
 None
 ```
 
-### .ctx/recent-changes.md
-- **If exists**: keep existing entries. Append git history below if useful.
+### .ctx/recent-changes.md (budget 3 KB)
+- **If exists**: keep entries, compress each to one line, cap at 10.
 - **If not exists**: create fresh:
 ```markdown
 # Recent Changes — {project name}
-> Last completed tasks. Older entries → docs/CHANGELOG.md
+> One line per entry, max 10. Older → docs/changelog.md
 
-{if existing project → summarize last 10 git commits as completed tasks}
+{if existing project → last 10 git commits, one line each: - YYYY-MM-DD summary}
 {if new project → "No completed tasks yet."}
 ```
 
-### .ctx/learned.md
-- **If exists**: keep existing entries. Append "Detected on init" section at the bottom.
+### .ctx/learned.md (budget 6 KB)
+- **If exists**: keep entries, compress to one line each. Append "Detected on init" section.
 - **If not exists**: create fresh:
 ```markdown
 # Learned — {project name}
-> Tricks, gotchas, project-specific knowledge. Shared via git.
-> Machine-specific notes go in local.md (gitignored).
+> One line per gotcha. Budget 6 KB. File-specific notes → .claude/rules/. Machine-specific → local.md
 
 ## Detected on init — {date}
-{any patterns/gotchas found during Phase 1 codebase reading}
-{if nothing notable → "Nothing notable yet."}
+{patterns/gotchas from Phase 1, one line each; if nothing → "Nothing notable yet."}
 ```
 
 ### .ctx/local.md (only if not exists)
 ```markdown
 # Local Memory — Machine-specific
-> Gitignored. Personal preferences and machine-specific notes.
+> Gitignored, NOT auto-imported. Read on demand. Long recipes belong in a skill, not here.
 ```
 
 ### TODO.md
@@ -298,46 +309,43 @@ Generate from codebase reading in Phase 1:
 ### .claude/rules/{stack}.md
 Copy from .claude/bootstrap/rules/stacks/{detected_stack}.md
 
-### .claude/settings.json — ONLY if {AUTO_SKILL} = yes
+### .claude/hooks/ — enforcement scripts (ALWAYS deployed)
 
-This hook surfaces the project's skills to the model on every prompt (skills are
-model-invoked, so this nudge raises the odds the right one fires).
+The framework's rules are hook-enforced, not memory-enforced. Deploy from
+`.claude/bootstrap/hooks/`:
 
-1. **Read first** if the file exists — MERGE, never clobber existing keys/hooks.
-   If a `UserPromptSubmit` skill-reminder hook already exists, replace just that one.
-2. Build the reminder string from the ACTUAL skill list resolved in Phases 3–4
-   (copied skills + the 2 custom skills). One line, comma-separated, with a 2–4 word
-   hint per skill. End with: "Routing table in CLAUDE.md > Skill Routing."
-3. Write this shape (merge into existing if present):
-
-```json
-{
-  "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "hooks": {
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"UserPromptSubmit\",\"additionalContext\":\"Project skills (invoke via the Skill tool when a task fits): <SKILL LIST>. Routing table in CLAUDE.md > Skill Routing.\"}}'",
-            "suppressOutput": true
-          }
-        ]
-      }
-    ]
-  }
-}
+```bash
+mkdir -p .claude/hooks
+cp .claude/bootstrap/hooks/ctx-budget.sh   .claude/hooks/   # byte budgets on .ctx/ + TODO.md
+cp .claude/bootstrap/hooks/report-guard.sh .claude/hooks/   # blocks ending a work turn without status report
+chmod +x .claude/hooks/*.sh
 ```
 
-4. Validate after writing:
-   `jq -e '.hooks.UserPromptSubmit[] | .hooks[] | select(.type=="command") | .command' .claude/settings.json`
-   then run the command's body and confirm it emits valid JSON with `.hookSpecificOutput.additionalContext`.
-5. `.claude/settings.json` is committed (team-wide). Do NOT gitignore it (only
-   `settings.local.json` is ignored, per Phase 8).
-6. **Watcher caveat** — a settings.json created mid-session isn't picked up until the
-   config reloads. Note in Phase 9 that the `/exit` + reopen step activates it.
+If {AUTO_SKILL} = yes, also deploy the skill router:
+1. Copy `.claude/bootstrap/hooks/skill-router.sh` → `.claude/hooks/skill-router.sh`
+2. Replace `{{SKILL_LIST}}` in the copied file with the ACTUAL skill list resolved in
+   Phases 3–4 (copied skills + the 2 custom skills). Comma-separated, each as
+   `skill-name (2-4 word trigger hint)`. Keep it ONE line — this is injected every prompt,
+   so it must stay ~60 tokens.
+3. `chmod +x .claude/hooks/skill-router.sh`
 
-If {AUTO_SKILL} = no → skip this file entirely.
+### .claude/settings.json — hook wiring (ALWAYS)
+
+1. **Read first** if the file exists — MERGE, never clobber existing keys/hooks.
+   If old framework hooks exist (e.g., an inline-echo UserPromptSubmit skill reminder),
+   replace just those.
+2. Start from `.claude/bootstrap/hooks/settings.json.tmpl`. If {AUTO_SKILL} = no,
+   drop the `UserPromptSubmit` block.
+3. Validate after writing:
+   - `python3 -m json.tool .claude/settings.json > /dev/null` (valid JSON)
+   - run each hook script with sample stdin and confirm exit 0:
+     `printf '{}' | .claude/hooks/ctx-budget.sh && printf 'x' | .claude/hooks/report-guard.sh`
+   - if {AUTO_SKILL} = yes: `printf '{}' | .claude/hooks/skill-router.sh` emits valid JSON
+     with `.hookSpecificOutput.additionalContext` and NO remaining `{{SKILL_LIST}}` placeholder.
+4. `.claude/settings.json` + `.claude/hooks/` are committed (team-wide). Do NOT gitignore
+   (only `settings.local.json` is ignored, per Phase 8).
+5. **Watcher caveat** — settings.json created mid-session isn't picked up until the config
+   reloads. Note in Phase 9 that the `/exit` + reopen step activates the hooks.
 
 ---
 
@@ -502,19 +510,20 @@ Print summary in {LANG}. Example in English:
   Stack       : {profile}
   Skills      : {count from Phase 3} + {count from Phase 4} custom
   Rules       : {count} + {preserved count} preserved
+  Hooks       : ctx-budget (token budgets) + report-guard (status reports){if AUTO_SKILL=yes: + skill-router}
   CLAUDE      : {created / updated / merged}
-  Skill-auto  : {on → routing table + settings.json hook | off → routing table only}
+  Skill-auto  : {on → routing table + skill-router hook | off → routing table only}
   Commit mode : {manual → asks first | auto → commits when gate passes}
 
   Please verify:
     - .ctx/active-tasks.md — tasks are correct
     - CLAUDE.md — existing content preserved + Commit Policy matches your choice
-    {if AUTO_SKILL=yes: - .claude/settings.json — UserPromptSubmit hook present}
+    - .claude/settings.json + .claude/hooks/ — hooks wired
     {if Scenario C: - Old .claude/context/ and .claude/memory/ have been removed}
 
   ⚠️ Important: type /exit then reopen claude
-  so the new CLAUDE.md, rules, skills{if AUTO_SKILL=yes: , and settings.json hook} are
-  loaded into the session. {if AUTO_SKILL=yes: The hook only activates after this reload.}
+  so the new CLAUDE.md, rules, skills, and hooks are loaded into the session.
+  Hooks only activate after this reload.
 ```
 
 Translate to {LANG} at runtime.

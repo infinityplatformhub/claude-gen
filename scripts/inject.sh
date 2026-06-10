@@ -25,21 +25,24 @@ cp -r "$FRAMEWORK_DIR/skills-library/." "$TARGET/.claude/skills/_library/"
 mkdir -p "$TARGET/.claude/bootstrap"
 cp -r "$FRAMEWORK_DIR/bootstrap/." "$TARGET/.claude/bootstrap/"
 
+# Make hook scripts executable (init agent deploys them to .claude/hooks/)
+chmod +x "$TARGET/.claude/bootstrap/hooks/"*.sh 2>/dev/null
+
 # Seed .ctx/ if empty
 [ -f "$TARGET/.ctx/active-tasks.md" ] || \
-  printf "# Active Tasks\n\n## In Progress\nNone\n\n## Blocked\nNone\n" \
+  printf "# Active Tasks\n> One line per task, max 5. Budget 2 KB.\n\n## In Progress\nNone\n\n## Blocked\nNone\n" \
     > "$TARGET/.ctx/active-tasks.md"
 
 [ -f "$TARGET/.ctx/recent-changes.md" ] || \
-  printf "# Recent Changes\n\nNo completed tasks yet.\n" \
+  printf "# Recent Changes\n> One line per entry, max 10. Older -> docs/changelog.md\n\nNo completed tasks yet.\n" \
     > "$TARGET/.ctx/recent-changes.md"
 
 [ -f "$TARGET/.ctx/learned.md" ] || \
-  printf "# Learned\n> Tricks and gotchas.\n" \
+  printf "# Learned\n> One line per gotcha. Budget 6 KB.\n" \
     > "$TARGET/.ctx/learned.md"
 
 [ -f "$TARGET/.ctx/local.md" ] || \
-  printf "# Local Memory\n> Gitignored. Machine-specific notes.\n" \
+  printf "# Local Memory\n> Gitignored, NOT auto-imported. Read on demand.\n" \
     > "$TARGET/.ctx/local.md"
 
 # Patch TODO.md — add Roadmap/Ideas if missing

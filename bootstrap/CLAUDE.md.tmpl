@@ -1,5 +1,6 @@
 # CLAUDE.md
 
+<!-- claude-gen v3 -->
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 This file is managed by claude-gen framework. Use `/claude-gen-init` to re-initialize, `/claude-gen-update` to update.
 
@@ -32,7 +33,26 @@ After completing any task, summarize in {{CONVO_LANG}}. Adapt wording naturally 
 2. **What was done** — approach, key decisions, what changed
 3. **What's next** — always include: suggest next step, ask user to verify, or recommend follow-up
 
-Keep it conversational. If the task revealed something unexpected, mention it. If there's nothing to follow up, say so explicitly ("nothing else needed" is better than skipping it).
+**End every report with a final line starting with `→ `** stating the next step or what
+you're waiting for (e.g., `→ รอ verify หน้า login แล้วค่อยไปต่อ T-205`). The `report-guard`
+hook blocks ending a work turn without it.
+
+Keep it conversational. If the task revealed something unexpected, mention it. The report
+lives in chat only — do NOT copy its prose into `.ctx/` or TODO.md (see Token Discipline).
+
+## Focus Discipline
+
+- **One task at a time.** Current task ID is whatever is 🔄 in `.ctx/active-tasks.md` — every action must serve it
+- Scope grows mid-task → create subtask {{TASK_PREFIX}}xxx.1, note it, finish the current task first
+- Spotted an unrelated bug/refactor → ONE line in TODO.md, then back to the task. Never fix it "while you're there"
+- Before each commit ask: "does this diff serve the current task ID?" — unrelated changes get reverted or split out
+
+## Token Discipline
+
+- **Persist terse, report verbose** — chat reports cost tokens once; `.ctx/` + TODO.md cost tokens every session forever. Files get one-liners, chat gets the prose
+- One home per fact: full task detail → `docs/changelog.md` only; everywhere else a pointer
+- Byte budgets (hook-enforced): active-tasks 2 KB · recent-changes 3 KB · learned 6 KB · TODO.md 16 KB
+- Don't re-read files already in context; don't re-state file content back to the user
 
 ## Skill Routing
 
@@ -74,4 +94,5 @@ Active tasks survive via @import below, but the backlog does not.
 @.ctx/active-tasks.md
 @.ctx/recent-changes.md
 @.ctx/learned.md
-@.ctx/local.md
+
+(`.ctx/local.md` is a machine-local scratchpad — NOT imported; read on demand.)

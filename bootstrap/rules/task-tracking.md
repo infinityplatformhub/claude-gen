@@ -1,6 +1,17 @@
 # Task Tracking Rules
 
-> Enforced by CLAUDE.md. Every task follows this lifecycle exactly.
+> Enforced by CLAUDE.md + hooks. Every task follows this lifecycle exactly.
+
+## Persist Terse, Report Verbose — the one rule above all others
+
+Chat reports to the user can be as detailed as useful — they cost tokens once.
+Anything WRITTEN to `.ctx/` or `TODO.md` is loaded into every future session —
+it costs tokens forever. So:
+
+- `.ctx/` + `TODO.md` entries = **one line each**. No paragraphs, ever.
+- Full prose detail has exactly ONE home: `docs/changelog.md` (append-only archive, never auto-imported).
+- Everything else is a pointer to it. Never duplicate the same task's prose in two files.
+- Byte budgets below are **hook-enforced** — exceeding one blocks your next action until trimmed.
 
 ---
 
@@ -27,42 +38,37 @@ Define task numbering areas in TODO.md. Example:
 
 ### 1. Create Task (before any code)
 
-Add to BOTH files:
+Add to BOTH files — one line each:
 
 **`.ctx/active-tasks.md`:**
 ```markdown
-### {{TASK_PREFIX}}xxx: Short title
-- **Status**: In Progress
-- **Branch**: feat/{{TASK_PREFIX}}xxx-short-name
-- **Goal**: one sentence
-- **Files**: list of files expected to change
-- **Blockers**: none
+- 🔄 **{{TASK_PREFIX}}xxx** Short title · goal in a few words · blockers: none
 ```
 
 **`TODO.md`** (under correct area section):
 ```markdown
-- **{{TASK_PREFIX}}xxx** Short title
+- 🔄 **{{TASK_PREFIX}}xxx** Short title
 ```
+
+Branch name is derivable ({{TASK_PREFIX}}xxx → `feat/{{TASK_PREFIX}}xxx-short-title`) — don't record it.
 
 ### 2. During Work
 
 - Work on one task at a time unless subtasks are truly parallel
-- Update `.ctx/active-tasks.md` status if blocked
+- Update `.ctx/active-tasks.md` status if blocked (`🔄` → `❌` + blocker note on the same line)
 - If scope grows → create subtask {{TASK_PREFIX}}xxx.1, don't expand silently
 
-### 3. Before Commit
+### 3. On Completion
 
 Run through the CLAUDE.md **Commit Policy** gate. Every box must pass before committing
 (in manual mode the final box is the user's explicit approval; in auto mode the gate replaces it).
 
-Update `.ctx/active-tasks.md`:
-```markdown
-- **Status**: Done
-- **Completed**: YYYY-MM-DD
-- **Summary**: what was done in one line
-```
+Then update the three homes — one line each:
 
-Move to `.ctx/recent-changes.md` + mark TODO.md as done.
+1. DELETE the task line from `.ctx/active-tasks.md`
+2. ADD one line to `.ctx/recent-changes.md`: `- YYYY-MM-DD **{{TASK_PREFIX}}xxx** one-line summary`
+3. Mark the TODO.md line `✅` (keep it one line — do NOT append prose)
+4. If the task deserves detail (decisions, gotchas, migration notes) → append a section to `docs/changelog.md`
 
 ### 4. Commit Message
 
@@ -78,25 +84,34 @@ Types: `feat` | `fix` | `refactor` | `docs` | `chore` | `test` | `perf`
 
 ---
 
-## `.ctx/active-tasks.md` Rules
+## Context File Budgets (hook-enforced)
 
-- Maximum 5 active tasks at once
-- Completed tasks move to `.ctx/recent-changes.md` within same session
-- Never delete from `.ctx/active-tasks.md` without moving to `.ctx/recent-changes.md`
-- If context compacts: tasks survive via @import in CLAUDE.md
+| File | Budget | Format |
+|------|--------|--------|
+| `.ctx/active-tasks.md` | 2 KB | one line per task, max 5 tasks |
+| `.ctx/recent-changes.md` | 3 KB | one line per entry, max 10 entries |
+| `.ctx/learned.md` | 6 KB | one line per entry |
+| `TODO.md` | 16 KB | one line per task |
 
-## `.ctx/recent-changes.md` Rules
+The `ctx-budget` hook blocks your next action when a write pushes a file over budget —
+trim immediately, don't defer.
 
-- Maximum 15 entries — oldest entries get removed when adding new ones
-- This file is auto-imported into context, so keeping it lean matters
-- Older entries are preserved in `TODO.md` Completed section (and eventually `docs/changelog.md`)
+### `.ctx/active-tasks.md`
+- Max 5 active tasks. Completed → delete here + one-liner in recent-changes (same session)
+- Survives context compaction via @import — this is the session primer, keep it pure WIP
 
-## `.ctx/learned.md` Rules
+### `.ctx/recent-changes.md`
+- Max 10 one-line entries — delete oldest when adding
+- Detail lives in `docs/changelog.md`, NOT here
 
-- Maximum ~30 entries — this file is @imported into every session
-- Keep entries short (1 line each) — not paragraphs
-- File-specific gotchas that only matter for 1-2 files → move to path-scoped `.claude/rules/` instead
-- General project gotchas stay here (e.g., "Go requires rebuild", "use pnpm not npm")
+### `.ctx/learned.md`
+- One line per gotcha. General project knowledge only (e.g., "Go requires rebuild", "use pnpm not npm")
+- File-specific gotchas (matter for 1-2 files) → path-scoped `.claude/rules/` instead
+- Delete entries that stop being true — this file must earn its tokens
+
+### `.ctx/local.md`
+- Machine-specific scratchpad (gitignored). NOT auto-imported — read it on demand when
+  local setup matters. Long recipes/snippets belong in a skill or docs, not here
 
 ---
 
@@ -110,15 +125,15 @@ Status icons:
 
 Never reorder Done tasks — append only at bottom of Done section.
 
-### Keeping TODO.md Lean
+### Keeping TODO.md Lean (16 KB budget, hook-enforced)
 
-TODO.md grows over time. Keep it manageable:
-
-- **Completed section** — max 20 entries. When it exceeds 20, move older entries to `docs/changelog.md` (create if not exists)
+- **Every entry is ONE line** — including ✅ done entries. Prose detail → `docs/changelog.md`
+- **✅ in backlog sections** — when a section accumulates >10 done one-liners, move them to
+  the Completed section; when Completed exceeds 20, move oldest to `docs/changelog.md`
 - **Archive format** in changelog: `## Week of YYYY-MM-DD` with bullet list of completed tasks
-- **Active sections** — only pending + in-progress tasks stay in main sections
 - **Never delete** — always archive to changelog before removing from TODO.md
-- If TODO.md exceeds ~150 lines, proactively archive completed tasks
+- **No duplicate task IDs** — a task ID appears in exactly ONE section. Moving a task
+  (backlog → roadmap, roadmap → backlog) means delete + re-add, never copy
 
 ---
 

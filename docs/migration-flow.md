@@ -107,9 +107,11 @@ curl -fsSL https://raw.githubusercontent.com/infinityplatformhub/claude-gen/main
 
 ## ขั้นตอนที่ 2: /claude-gen-init (9 Phases)
 
-### Phase 0 — ถามภาษา
+### Phase 0 — Preferences (ถามก่อนทุกอย่าง)
 
-ถามครั้งเดียว ใช้ตลอด session — code/comments/commits ยังคงเป็นภาษาอังกฤษ
+ถามครั้งเดียว 3 ข้อในข้อความเดียว: **ภาษา + commit mode (manual/auto) + auto-skill (yes/no)**
+จากนั้นทุกข้อความหลังจากนี้เป็นภาษาที่เลือก (language lock — ห้ามสลับกลับ eng)
+code/comments/commits ยังคงเป็นภาษาอังกฤษ
 
 ### Phase 1 — สำรวจ codebase
 
@@ -150,7 +152,7 @@ curl -fsSL https://raw.githubusercontent.com/infinityplatformhub/claude-gen/main
 | local.md | **ไม่แตะ** | สร้างใหม่ |
 | TODO.md | **append** — ต่อท้าย | สร้างจาก template (includes Roadmap + Ideas sections) |
 
-### Phase 6 — .claude/rules/
+### Phase 6 — .claude/rules/ + hooks + settings.json
 
 สร้าง/overwrite **เฉพาะ framework rules**:
 - task-tracking.md (replace `{{TASK_PREFIX}}`)
@@ -159,6 +161,11 @@ curl -fsSL https://raw.githubusercontent.com/infinityplatformhub/claude-gen/main
 - {stack}.md (copy จาก template)
 
 **Custom rules ของ user (เช่น `api-guidelines.md`) จะไม่ถูกลบ**
+
+Deploy enforcement hooks จาก `.claude/bootstrap/hooks/` → `.claude/hooks/`:
+- `ctx-budget.sh` + `report-guard.sh` — ติดตั้งเสมอ
+- `skill-router.sh` — เฉพาะเปิด auto-skill (replace `{{SKILL_LIST}}` ด้วย skills จริง)
+- merge hook wiring เข้า `.claude/settings.json` (ไม่ clobber ของเดิม) + validate
 
 ### Phase 7 — CLAUDE.md
 
@@ -180,7 +187,7 @@ elif มี CLAUDE.md แต่ไม่มี .ctx/:
     สร้าง .ctx/ + อัพเดท imports เท่านั้น
 ```
 
-Placeholders (6 ตัว):
+Placeholders:
 
 | Placeholder | มาจาก |
 |-------------|--------|
@@ -189,7 +196,10 @@ Placeholders (6 ตัว):
 | `{{CONVO_LANG}}` | Phase 0 |
 | `{{TASK_PREFIX}}` | Phase 2 คำถาม 3 |
 | `{{STACK_SUMMARY}}` | Phase 1 detect |
+| `{{DEV_COMMANDS}}` | Makefile / package.json scripts |
 | `{{IMPACT_RULES}}` | Generate จาก stack |
+| `{{SKILL_ROUTING}}` | Phase 0 auto-skill + skills จริงจาก Phase 3-4 |
+| `{{COMMIT_POLICY}}` | Phase 0 commit mode |
 
 ### Phase 8 — .gitignore
 

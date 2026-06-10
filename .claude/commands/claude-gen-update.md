@@ -37,7 +37,29 @@ mkdir -p .claude/bootstrap
 cp -r /tmp/claude-gen-update/bootstrap/. .claude/bootstrap/
 ```
 
-### Step 4 — Patch TODO.md
+### Step 4 — Deploy enforcement hooks
+
+```bash
+mkdir -p .claude/hooks
+cp .claude/bootstrap/hooks/ctx-budget.sh   .claude/hooks/
+cp .claude/bootstrap/hooks/report-guard.sh .claude/hooks/
+chmod +x .claude/hooks/*.sh
+```
+
+**skill-router.sh** — special handling (it embeds the project's skill list):
+- If `.claude/hooks/skill-router.sh` already exists → leave it (project-specific list inside)
+- If missing AND `.claude/settings.json` has an old inline-echo `UserPromptSubmit` skill
+  reminder → migrate: copy `skill-router.sh` from bootstrap, replace `{{SKILL_LIST}}` with
+  the skill names found in `.claude/skills/` (excluding `_library`), remove the old inline hook
+- If missing and no old hook → skip (user chose no auto-skill at init)
+
+**settings.json** — read first, MERGE with `.claude/bootstrap/hooks/settings.json.tmpl`:
+- Add the `PostToolUse` (ctx-budget) and `Stop` (report-guard) wiring if missing
+- Add `UserPromptSubmit` (skill-router) wiring only if `.claude/hooks/skill-router.sh` exists
+- Never remove or clobber the user's own hooks/keys
+- Validate: `python3 -m json.tool .claude/settings.json > /dev/null`
+
+### Step 4b — Patch TODO.md
 
 If `TODO.md` exists but missing `## Roadmap` section:
 
@@ -46,6 +68,30 @@ if [ -f TODO.md ] && ! grep -q "## Roadmap" TODO.md; then
   printf "\n---\n\n## Roadmap\n\n> No task ID yet — move to backlog sections above when ready to execute.\n\n_Empty_\n\n---\n\n## Ideas\n\n> Captured for future consideration. Not committed to.\n\n_Empty_\n" >> TODO.md
 fi
 ```
+
+### Step 4c — Compress over-budget context files (immediate cleanup)
+
+Don't leave bloated files for the hook to catch mid-task — clean them up NOW:
+
+```bash
+for f in .ctx/active-tasks.md .ctx/recent-changes.md .ctx/learned.md TODO.md; do
+  [ -f "$f" ] && wc -c "$f"
+done
+```
+
+Budgets: active-tasks 2048 · recent-changes 3072 · learned 6144 · TODO.md 16384
+
+For each file over its budget:
+1. **Archive first, never lose detail** — move full prose to `docs/changelog.md`
+   (create if missing, format: `## Week of YYYY-MM-DD` + bullets)
+2. Rewrite remaining entries as one-liners per `.claude/rules/task-tracking.md`:
+   - active-tasks → `- 🔄 **T-xxx** title · goal · blockers: none`, max 5
+   - recent-changes → `- YYYY-MM-DD **T-xxx** summary`, keep newest 10
+   - learned → one line per gotcha; file-specific entries → path-scoped `.claude/rules/`; delete stale ones
+   - TODO.md → ✅ prose entries become one-liners; duplicate task IDs removed; Completed overflow → changelog
+3. Re-check size and report before/after bytes per file
+
+If all files are within budget → report "already within budget" and move on.
 
 ### Step 5 — Patch CLAUDE.md (MANDATORY — do not skip)
 
@@ -76,12 +122,34 @@ For each item: read the file, check if the issue exists, fix if needed, report w
    - If a `## Commit Policy` section already exists → leave its mode and content as-is.
    - Either way, ensure pushing is noted as always-ask.
 
+6. **local.md auto-import** — look for `@.ctx/local.md` in the Context section → remove the
+   line and add: `` (`.ctx/local.md` is a machine-local scratchpad — NOT imported; read on demand.) ``
+   (local.md is a scratchpad; importing it every session wastes tokens)
+
+7. **Missing Focus/Token Discipline** — if `## Focus Discipline` or `## Token Discipline`
+   sections don't exist, copy them from `.claude/bootstrap/CLAUDE.md.tmpl` (substitute the
+   project's task prefix for `{{TASK_PREFIX}}`). These pair with the new enforcement hooks.
+
+8. **Status report `→` marker** — the Status Report section must require ending every report
+   with a final line starting with `→ ` (the report-guard hook checks for it). Add the
+   requirement if missing — copy the wording from `.claude/bootstrap/CLAUDE.md.tmpl`.
+
+9. **Version marker** — ensure `<!-- claude-gen v3 -->` exists near the top (line 2-3).
+   Add or bump it if older/missing.
+
 Report each item: "checked — {fixed / already correct}"
 Do NOT rewrite or restructure CLAUDE.md — only fix the items above.
 
-### Step 6 — Review .claude/rules/ for stale content
+### Step 6 — Refresh framework-owned rules + review the rest
 
-Read each file in `.claude/rules/`. Look for:
+**Framework-owned rules** — `task-tracking.md` and `dev-workflow.md` are framework files,
+not user content. Regenerate them from `.claude/bootstrap/rules/`:
+1. Detect the project's task prefix from the existing `.claude/rules/task-tracking.md`
+   (or CLAUDE.md Task Workflow section)
+2. Copy both files from bootstrap, replacing ALL `{{TASK_PREFIX}}` with the detected prefix
+3. This is how byte budgets + one-liner formats reach existing projects
+
+**All other rules** (custom + project-reference.md + stack rules) — review only. Look for:
 - Stale comments that contradict current project state (e.g., "no tests configured" when tests exist)
 - Outdated references to old paths or tools
 - Placeholder text that was never filled in (e.g., "_Add during project init_")
@@ -128,20 +196,24 @@ Framework updated.
   Backup     : .claude-backup/{timestamp}/
   Commands   : updated
   Agents     : updated
+  Hooks      : {deployed / refreshed} (ctx-budget, report-guard{, skill-router})
+  Cleanup    : {n files compressed, X KB → Y KB / all within budget}
   Skills lib : {count} cached + {count} local
   Bootstrap  : updated
+  Rules      : task-tracking + dev-workflow refreshed, custom rules untouched
   TODO.md    : {patched / already up to date}
   CLAUDE.md  : {patched / no changes needed}
   .gitignore : {patched / already up to date}
 
-Not touched: .ctx/, .claude/rules/, active skills
+Not touched: .ctx/, custom rules, active skills
 
-⚠️ Important: type /exit then reopen claude to load updated config
+⚠️ Important: type /exit then reopen claude to load updated config + hooks
 ```
 
 ### What is NOT touched
 
 - `.ctx/` — all context files preserved
-- `.claude/rules/` — all rules preserved (including custom)
+- `.claude/rules/` custom rules — preserved (framework-owned task-tracking/dev-workflow are refreshed)
 - `.claude/skills/{active}/` — active skills preserved (run /claude-gen-sync-skills to update these)
+- `.claude/hooks/skill-router.sh` — preserved if it exists (holds the project's skill list)
 - `TODO.md` content — only appends missing sections

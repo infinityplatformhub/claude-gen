@@ -5,8 +5,9 @@ A production-ready framework for Claude Code projects. Provides autonomous proje
 ## Features
 
 - **Autonomous PM** — Claude manages tasks, decides commit scope, splits work into subtasks
-- **Enforced Commit Quality** — pre-commit checklist, task ID required, user approval gate
-- **Persistent Context** — task state, learned gotchas, and project knowledge survive across sessions
+- **Enforcement Hooks** — byte budgets on context files, mandatory status reports, and skill routing enforced by real hooks, not agent memory
+- **Enforced Commit Quality** — pre-commit checklist, task ID required, manual or auto commit mode
+- **Persistent Context, Token-Lean** — one-line entries with hook-enforced budgets; detail lives once in the changelog
 - **18 Curated Skills** — language, framework, testing, security, and DevOps expertise auto-loaded per stack
 - **12 Stack Profiles** — Go, Python, PHP, Node.js, React — auto-detected, multi-stack mono repos supported
 - **Impact Rules** — "changed X → must update Y" enforced automatically
@@ -91,6 +92,12 @@ skills-library/
 ├── _registry.json      external sources with pinned commit SHAs
 ├── _cache/             community skills (verified, offline-ready)
 └── {local}/            self-authored universal skills
+
+bootstrap/
+├── CLAUDE.md.tmpl      system prompt template
+├── TODO.md.tmpl        backlog template
+├── rules/              universal + stack-specific rules
+└── hooks/              enforcement hooks (ctx-budget, report-guard, skill-router)
 ```
 
 ## Documentation

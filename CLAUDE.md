@@ -34,10 +34,15 @@ After completing any task, summarize in Thai. Adapt wording naturally — no fix
 bootstrap/                   templates deployed to target projects
 ├── CLAUDE.md.tmpl           system prompt template ({{PLACEHOLDERS}})
 ├── TODO.md.tmpl             task backlog template
+├── hooks/                   enforcement hooks deployed to .claude/hooks/
+│   ├── ctx-budget.sh        byte budgets on .ctx/ + TODO.md (PostToolUse)
+│   ├── report-guard.sh      mandatory status report (Stop)
+│   ├── skill-router.sh      skill routing every prompt (UserPromptSubmit, {{SKILL_LIST}})
+│   └── settings.json.tmpl   hook wiring template
 └── rules/
     ├── task-tracking.md     universal rules (has {{TASK_PREFIX}} placeholders)
     ├── dev-workflow.md      universal rules (has {{TASK_PREFIX}} placeholders)
-    └── stacks/              stack-specific rules (6 files)
+    └── stacks/              stack-specific rules (7 files)
 
 skills-library/              curated skills
 ├── _index.json              skill → stack profile mapping (18 skills, 12 profiles)
@@ -104,11 +109,14 @@ idx = json.load(open('skills-library/_index.json'))
 skills = set(idx['skills'])
 for p, info in idx['stack_profiles'].items():
     bad = [s for s in info['skills'] if s not in skills]
-    print(f'{'ERROR: '+p+' → '+str(bad) if bad else 'OK: '+p}')
+    print(('ERROR: ' + p + ' -> ' + str(bad)) if bad else ('OK: ' + p))
     for r in info['rules']:
-        exists = os.path.exists(f'bootstrap/rules/stacks/{r}')
-        if not exists: print(f'  MISSING RULE: {r}')
+        if not os.path.exists('bootstrap/rules/stacks/' + r):
+            print('  MISSING RULE: ' + r)
 "
+
+# 4. Hook scripts are executable + behave (exit 0 on benign input, valid JSON when firing)
+for h in bootstrap/hooks/*.sh; do printf '{}' | sh "$h" > /dev/null && echo "OK: $h"; done
 
 # 3. inject.sh works end-to-end
 rm -rf /tmp/test-fw && mkdir /tmp/test-fw && bash scripts/inject.sh /tmp/test-fw && ls /tmp/test-fw/.claude/bootstrap/CLAUDE.md.tmpl && rm -rf /tmp/test-fw
