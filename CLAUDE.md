@@ -36,7 +36,7 @@ bootstrap/                   templates deployed to target projects
 ├── TODO.md.tmpl             task backlog template
 ├── hooks/                   enforcement hooks deployed to .claude/hooks/
 │   ├── ctx-budget.sh        byte budgets on .ctx/ + TODO.md (PostToolUse)
-│   ├── report-guard.sh      mandatory status report (Stop)
+│   ├── report-guard.sh      status report enforcement (Stop) — opt-in via {REPORT_GUARD}
 │   ├── skill-router.sh      skill routing every prompt (UserPromptSubmit, {{SKILL_LIST}})
 │   └── settings.json.tmpl   hook wiring template
 └── rules/

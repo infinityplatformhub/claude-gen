@@ -34,8 +34,9 @@ After completing any task, summarize in {{CONVO_LANG}}. Adapt wording naturally 
 3. **What's next** — always include: suggest next step, ask user to verify, or recommend follow-up
 
 **End every report with a final line starting with `→ `** stating the next step or what
-you're waiting for (e.g., `→ รอ verify หน้า login แล้วค่อยไปต่อ T-205`). The `report-guard`
-hook blocks ending a work turn without it.
+you're waiting for (e.g., `→ รอ verify หน้า login แล้วค่อยไปต่อ T-205`). If the
+`report-guard` hook is installed (chosen at init), it blocks ending a work turn without
+this line; if not, the report stays a guideline — still expected, just not hard-enforced.
 
 Keep it conversational. If the task revealed something unexpected, mention it. The report
 lives in chat only — do NOT copy its prose into `.ctx/` or TODO.md (see Token Discipline).

@@ -60,9 +60,15 @@ include short Thai hints so it's readable either way):
 3. Auto-skill activation?  [default: yes]
      • yes — install a hook that surfaces the right skill on every prompt
      • no  — skills stay model-invoked only
+
+4. Status-report enforcement?  [default: on]
+     • on  — a Stop hook blocks ending a work turn until you write a status
+             report (the "→ next step" line). Hard guarantee, can nag on small tasks.
+     • off — status reports stay a CLAUDE.md guideline, not hook-enforced.
+             Pick this if the report-guard prompts feel noisy on tiny changes.
 ```
 
-Store as {LANG}, {COMMIT_MODE}, {AUTO_SKILL}.
+Store as {LANG}, {COMMIT_MODE}, {AUTO_SKILL}, {REPORT_GUARD}.
 
 ### Language lock — read carefully
 
@@ -330,15 +336,24 @@ Generate from codebase reading in Phase 1:
 ### .claude/rules/{stack}.md
 Copy from .claude/bootstrap/rules/stacks/{detected_stack}.md
 
-### .claude/hooks/ — enforcement scripts (ALWAYS deployed)
+### .claude/hooks/ — enforcement scripts
 
 The framework's rules are hook-enforced, not memory-enforced. Deploy from
 `.claude/bootstrap/hooks/`:
 
 ```bash
 mkdir -p .claude/hooks
-cp .claude/bootstrap/hooks/ctx-budget.sh   .claude/hooks/   # byte budgets on .ctx/ + TODO.md
+cp .claude/bootstrap/hooks/ctx-budget.sh   .claude/hooks/   # byte budgets on .ctx/ + TODO.md — ALWAYS
+```
+
+`ctx-budget.sh` is always deployed. Deploy `report-guard.sh` ONLY if {REPORT_GUARD} = on:
+
+```bash
+# only when {REPORT_GUARD} = on
 cp .claude/bootstrap/hooks/report-guard.sh .claude/hooks/   # blocks ending a work turn without status report
+```
+
+```bash
 chmod +x .claude/hooks/*.sh
 ```
 
@@ -356,11 +371,13 @@ If {AUTO_SKILL} = yes, also deploy the skill router:
    If old framework hooks exist (e.g., an inline-echo UserPromptSubmit skill reminder),
    replace just those.
 2. Start from `.claude/bootstrap/hooks/settings.json.tmpl`. If {AUTO_SKILL} = no,
-   drop the `UserPromptSubmit` block.
+   drop the `UserPromptSubmit` block. If {REPORT_GUARD} = off, drop the `Stop` block
+   (and don't deploy `report-guard.sh`).
 3. Validate after writing:
    - `python3 -m json.tool .claude/settings.json > /dev/null` (valid JSON)
-   - run each hook script with sample stdin and confirm exit 0:
-     `printf '{}' | .claude/hooks/ctx-budget.sh && printf 'x' | .claude/hooks/report-guard.sh`
+   - run each deployed hook with sample stdin and confirm exit 0:
+     `printf '{}' | .claude/hooks/ctx-budget.sh`
+     and, only if {REPORT_GUARD} = on: `printf 'x' | .claude/hooks/report-guard.sh`
    - if {AUTO_SKILL} = yes: `printf '{}' | .claude/hooks/skill-router.sh` emits valid JSON
      with `.hookSpecificOutput.additionalContext` and NO remaining `{{SKILL_LIST}}` placeholder.
 4. `.claude/settings.json` + `.claude/hooks/` are committed (team-wide). Do NOT gitignore
@@ -534,7 +551,8 @@ Print summary in {LANG}. Example in English:
   Stack       : {profile}
   Skills      : {count from Phase 3} + {count from Phase 4} custom
   Rules       : {count} + {preserved count} preserved
-  Hooks       : ctx-budget (token budgets) + report-guard (status reports){if AUTO_SKILL=yes: + skill-router}
+  Hooks       : ctx-budget (token budgets){if REPORT_GUARD=on: + report-guard (status reports)}{if AUTO_SKILL=yes: + skill-router}
+  Report-guard: {on → status report enforced by hook | off → guideline only, not enforced}
   CLAUDE      : {created / updated / merged}
   Skill-auto  : {on → routing table + skill-router hook | off → routing table only}
   Commit mode : {manual → asks first | auto → commits when gate passes}

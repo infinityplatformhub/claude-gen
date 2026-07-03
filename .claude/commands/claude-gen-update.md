@@ -41,8 +41,10 @@ cp -r /tmp/claude-gen-update/bootstrap/. .claude/bootstrap/
 
 ```bash
 mkdir -p .claude/hooks
-cp .claude/bootstrap/hooks/ctx-budget.sh   .claude/hooks/
-cp .claude/bootstrap/hooks/report-guard.sh .claude/hooks/
+cp .claude/bootstrap/hooks/ctx-budget.sh   .claude/hooks/   # always
+# report-guard is now a preference — refresh the script ONLY if already deployed;
+# do NOT newly add it here (the toggle in Step 4d handles enable/disable):
+[ -f .claude/hooks/report-guard.sh ] && cp .claude/bootstrap/hooks/report-guard.sh .claude/hooks/
 chmod +x .claude/hooks/*.sh
 ```
 
@@ -54,10 +56,38 @@ chmod +x .claude/hooks/*.sh
 - If missing and no old hook → skip (user chose no auto-skill at init)
 
 **settings.json** — read first, MERGE with `.claude/bootstrap/hooks/settings.json.tmpl`:
-- Add the `PostToolUse` (ctx-budget) and `Stop` (report-guard) wiring if missing
+- Add the `PostToolUse` (ctx-budget) wiring if missing
 - Add `UserPromptSubmit` (skill-router) wiring only if `.claude/hooks/skill-router.sh` exists
+- Do NOT touch the `Stop` (report-guard) wiring here — Step 4d owns it. Leave the user's
+  current state as-is until then.
 - Never remove or clobber the user's own hooks/keys
 - Validate: `python3 -m json.tool .claude/settings.json > /dev/null`
+
+### Step 4d — Report-guard toggle (ask once)
+
+The status-report Stop hook is now opt-in. Detect the current state, then offer to
+change it (ask in the project's conversation language):
+
+- **Currently ON**  = `.claude/hooks/report-guard.sh` exists AND settings.json has a
+  `Stop` block pointing at it.
+- **Currently OFF** = otherwise.
+
+Ask:
+
+```
+Status-report enforcement is currently {ON / OFF}.
+  • keep — leave it as is
+  • on   — a Stop hook blocks ending a work turn until you write the "→ next step" report
+  • off  — status reports become a guideline only (no hook nagging on small tasks)
+```
+
+STOP and wait. Apply the answer:
+- **turn on**: `cp .claude/bootstrap/hooks/report-guard.sh .claude/hooks/ && chmod +x .claude/hooks/report-guard.sh`,
+  then add the `Stop` block from `settings.json.tmpl` (merge, keep other hooks).
+- **turn off**: remove the `Stop` block that points at `report-guard.sh` from settings.json
+  (leave the script file; harmless unwired). Keep other hooks intact.
+- **keep**: no change.
+Re-validate settings.json is valid JSON after any change.
 
 ### Step 4b — Patch TODO.md
 
@@ -130,9 +160,12 @@ For each item: read the file, check if the issue exists, fix if needed, report w
    sections don't exist, copy them from `.claude/bootstrap/CLAUDE.md.tmpl` (substitute the
    project's task prefix for `{{TASK_PREFIX}}`). These pair with the new enforcement hooks.
 
-8. **Status report `→` marker** — the Status Report section must require ending every report
-   with a final line starting with `→ ` (the report-guard hook checks for it). Add the
-   requirement if missing — copy the wording from `.claude/bootstrap/CLAUDE.md.tmpl`.
+8. **Status report `→` marker** — the Status Report section should ask reports to end with a
+   final line starting with `→ `. Copy the wording from `.claude/bootstrap/CLAUDE.md.tmpl`
+   if missing. The wording is now conditional ("if the report-guard hook is installed…") so
+   it reads correctly whether the hook is on or off — if the file still has the old
+   hard-enforced phrasing ("The `report-guard` hook blocks ending a work turn without it"),
+   replace it with the conditional wording from the template.
 
 9. **Version marker** — ensure `<!-- claude-gen v3 -->` exists near the top (line 2-3).
    Add or bump it if older/missing.
@@ -269,7 +302,8 @@ Framework updated.
   Backup     : .claude-backup/{timestamp}/
   Commands   : updated
   Agents     : updated
-  Hooks      : {deployed / refreshed} (ctx-budget, report-guard{, skill-router})
+  Hooks      : {deployed / refreshed} (ctx-budget{, report-guard}{, skill-router})
+  Report-guard: {kept on / kept off / turned on / turned off}
   Cleanup    : {n files compressed, X KB → Y KB / all within budget}
   Skills lib : {count} cached + {count} local
   Bootstrap  : updated
