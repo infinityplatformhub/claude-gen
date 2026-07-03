@@ -143,7 +143,7 @@
                       "id": "uVdvY",
                       "name": "srcB2d",
                       "fill": "#94A3B8",
-                      "content": "_cache/ (13 external)\nlocal/ (5 self-authored)\n_index.json + _registry.json",
+                      "content": "_cache/ (13 external)\nlocal/ (6 self-authored)\n_index.json + _registry.json",
                       "fontFamily": "Inter",
                       "fontSize": 11,
                       "fontWeight": "normal"
@@ -470,7 +470,7 @@
                               "id": "SXPIf",
                               "name": "skillsD",
                               "fill": "#94A3B8",
-                              "content": "_library/ (read-only, 18 skills)\n{active}/ (copy ตาม stack)\n{project}-arch/ (generated)",
+                              "content": "_library/ (read-only, 19 skills)\n{active}/ (copy ตาม stack)\n{project}-arch/ (generated)",
                               "fontFamily": "Inter",
                               "fontSize": 10,
                               "fontWeight": "normal"

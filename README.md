@@ -5,10 +5,11 @@ A production-ready framework for Claude Code projects. Provides autonomous proje
 ## Features
 
 - **Autonomous PM** — Claude manages tasks, decides commit scope, splits work into subtasks
-- **Enforcement Hooks** — byte budgets on context files, mandatory status reports, and skill routing enforced by real hooks, not agent memory
+- **Enforcement Hooks** — byte budgets on context files, opt-in status-report enforcement, and skill routing enforced by real hooks, not agent memory
 - **Enforced Commit Quality** — pre-commit checklist, task ID required, manual or auto commit mode
+- **Preferences First** — one upfront prompt sets language, commit mode, auto-skill, and status-report enforcement; everything after is in your language
 - **Persistent Context, Token-Lean** — one-line entries with hook-enforced budgets; detail lives once in the changelog
-- **18 Curated Skills** — language, framework, testing, security, and DevOps expertise auto-loaded per stack
+- **19 Curated Skills** — language, framework, testing, security, and DevOps expertise auto-loaded per stack, plus opt-in `contract-first-api` (API as single source of truth)
 - **12 Stack Profiles** — Go, Python, PHP, Node.js, React — auto-detected, multi-stack mono repos supported
 - **Impact Rules** — "changed X → must update Y" enforced automatically
 - **Roadmap & Ideas** — defer work naturally, tracked in TODO.md without cluttering the backlog
@@ -63,14 +64,16 @@ Auto-detected during `/claude-gen-init`. Each profile selects the right skills a
 
 ## Skills
 
-18 skills from trusted sources, cached with pinned commit SHAs.
+19 skills — 13 from external sources (cached with pinned commit SHAs) + 6 self-authored.
 
 | Source | Skills |
 |--------|--------|
 | [Jeffallan/claude-skills](https://github.com/Jeffallan/claude-skills) | golang-pro, python-pro, typescript-pro, react-expert, nextjs-developer, php-pro, laravel-specialist, django-expert, fastapi-expert |
 | [antfu/skills](https://github.com/antfu/skills) | nuxt, vue, vitest |
 | [getsentry/skills](https://github.com/getsentry/skills) | security-audit |
-| Self-authored | debugging, docker, git-advanced, golang-testing, migration-database |
+| Self-authored | debugging, docker, git-advanced, golang-testing, migration-database, contract-first-api¹ |
+
+¹ `contract-first-api` is opt-in — offered at init/update only when a backend is detected. Not auto-loaded by any profile.
 
 See [Skills Guide](docs/skills-guide.md) for details.
 

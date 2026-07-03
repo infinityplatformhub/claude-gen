@@ -60,6 +60,15 @@ This keeps context window efficient — Claude only loads what it needs.
 | debugging | Structured root-cause methodology, common patterns | — (self-contained) |
 | security-audit | OWASP, injection, XSS, auth, confidence-based review | 17 vulnerability refs + 2 language guides + 1 infra guide |
 
+### Opt-in Skills
+Not auto-loaded by any profile — offered at `/claude-gen-init` / `/claude-gen-update` only when a backend is detected, or added manually.
+
+| Skill | What It Covers | References |
+|-------|---------------|-----------|
+| contract-first-api | API as single source of truth: OpenAPI-from-code, single-source markdown docs, `/llms.txt` agent on-ramp, generated client types, docs↔guard drift test | — (self-contained) |
+
+Add it anytime with `/claude-gen-add-skill contract-first-api`.
+
 ---
 
 ## Managing Skills

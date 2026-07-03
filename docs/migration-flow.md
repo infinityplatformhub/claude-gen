@@ -44,7 +44,7 @@
 │  ├── CLAUDE.md.tmpl├── _index.json  ├── commands│
 │  ├── TODO.md.tmpl  ├── _registry    ├── agents  │
 │  └── rules/stacks/ ├── _cache/ (13) └── ...     │
-│                    └── local (5)                │
+│                    └── local (6)                │
 └──────────────────┬──────────────────────────────┘
                    │  curl | sh
                    ▼
@@ -109,9 +109,9 @@ curl -fsSL https://raw.githubusercontent.com/infinityplatformhub/claude-gen/main
 
 ### Phase 0 — Preferences (ถามก่อนทุกอย่าง)
 
-ถามครั้งเดียว 3 ข้อในข้อความเดียว: **ภาษา + commit mode (manual/auto) + auto-skill (yes/no)**
-จากนั้นทุกข้อความหลังจากนี้เป็นภาษาที่เลือก (language lock — ห้ามสลับกลับ eng)
-code/comments/commits ยังคงเป็นภาษาอังกฤษ
+ถามครั้งเดียว 4 ข้อในข้อความเดียว: **ภาษา + commit mode (manual/auto) + auto-skill (yes/no)
++ status-report enforcement (on/off)** จากนั้นทุกข้อความหลังจากนี้เป็นภาษาที่เลือก
+(language lock — ห้ามสลับกลับ eng) code/comments/commits ยังคงเป็นภาษาอังกฤษ
 
 ### Phase 1 — สำรวจ codebase
 
@@ -163,7 +163,8 @@ code/comments/commits ยังคงเป็นภาษาอังกฤษ
 **Custom rules ของ user (เช่น `api-guidelines.md`) จะไม่ถูกลบ**
 
 Deploy enforcement hooks จาก `.claude/bootstrap/hooks/` → `.claude/hooks/`:
-- `ctx-budget.sh` + `report-guard.sh` — ติดตั้งเสมอ
+- `ctx-budget.sh` — ติดตั้งเสมอ
+- `report-guard.sh` — เฉพาะเมื่อ status-report enforcement = on (`{REPORT_GUARD}`)
 - `skill-router.sh` — เฉพาะเปิด auto-skill (replace `{{SKILL_LIST}}` ด้วย skills จริง)
 - merge hook wiring เข้า `.claude/settings.json` (ไม่ clobber ของเดิม) + validate
 
@@ -263,7 +264,7 @@ my-project/
 │   ├── commands/                ← ใหม่ (claude-gen-init, claude-gen-update, claude-gen-add-skill, claude-gen-sync-skills)
 │   ├── agents/                  ← ใหม่ (project-init-agent)
 │   ├── bootstrap/               ← ใหม่ (templates)
-│   ├── skills/_library/         ← ใหม่ (18 skills)
+│   ├── skills/_library/         ← ใหม่ (19 skills)
 │   └── rules/
 │       └── api-guidelines.md    ← ยังอยู่!
 ├── .ctx/                        ← ใหม่ (seed files)
