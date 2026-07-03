@@ -151,6 +151,24 @@ Ask only what cannot be inferred — offer a detected default for every question
 user can answer "ok to all". Preferences ({LANG}, {COMMIT_MODE}, {AUTO_SKILL}) were
 already collected in Phase 0 — NEVER re-ask them here.
 
+### Question 5 — Contract-First API (ONLY if a backend/API was detected in Phase 1)
+
+If Phase 1 found a backend or HTTP API (Go/FastAPI/Django/Express/NestJS/Laravel/…),
+add ONE more question. Skip it entirely for frontend-only projects (e.g. react-standalone).
+Render it in {LANG} — the example is English:
+
+```
+  5. Contract-First API? (API = single source of truth + self-serve docs)  [default: no]
+       Makes the API self-documenting so humans AND AI agents can onboard from just
+       (base_url, token): OpenAPI generated from code, one markdown handbook served
+       everywhere, /llms.txt on-ramp, generated client types, docs↔guard drift test.
+       • yes — install the contract-first-api skill + wire it into skill routing now.
+               (The full build is run later on demand, or offered by /claude-gen-update.)
+       • no  — skip; you can add it anytime with /claude-gen-add-skill contract-first-api
+```
+
+Store as {CONTRACT_FIRST} (yes/no). Default no if unanswered.
+
 ---
 
 ## Phase 3 — Select & Copy Skills
@@ -168,6 +186,9 @@ For each detected profile in _index.json:
   add profile.rules to merged rules list
 
 Deduplicate — each skill/rule appears once even if multiple profiles include it.
+
+If {CONTRACT_FIRST} = yes:
+  add contract-first-api to the merged skill list (source local, in skills-library/contract-first-api/)
 
 If unmatched stacks detected:
   add universal skills (git-advanced, debugging, docker, security-audit)
@@ -388,6 +409,9 @@ Example shape:
 | Starting / tracking / committing a task | `{task-prefix}-workflow` |
 | Architecture, module boundaries, porting | `{project}-arch` |
 ```
+
+If {CONTRACT_FIRST} = yes, add a row:
+`| API endpoints, OpenAPI/docs, agent on-ramp | `contract-first-api` |`
 
 If {AUTO_SKILL} = no, still emit the table (it's a passive nudge), just drop the hook sentence.
 

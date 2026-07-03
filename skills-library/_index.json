@@ -89,6 +89,13 @@
       "description": "Security — OWASP, injection, auth, confidence-based review",
       "stacks": ["*"],
       "source": "external"
+    },
+    "contract-first-api": {
+      "description": "API as single source of truth + self-serve docs (llms.txt + handbook + OpenAPI)",
+      "stacks": ["go-backend", "go-nuxt", "go-react", "go-api", "python-fastapi", "python-django", "nodejs-express", "nodejs-nuxt", "nodejs-react", "php-laravel", "php-api", "php-react"],
+      "source": "local",
+      "optional": true,
+      "note": "Opt-in only — offered at init/update when a backend is detected. Not auto-included in profiles."
     }
   },
   "stack_profiles": {

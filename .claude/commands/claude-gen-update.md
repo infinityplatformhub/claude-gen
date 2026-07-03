@@ -182,6 +182,79 @@ if [ -f Dockerfile ] || [ -f docker-compose.yml ] || [ -f docker-compose.yaml ] 
 fi
 ```
 
+### Step 8b — Offer Contract-First API (interactive, only if a backend exists)
+
+New in this framework version: an opt-in **contract-first-api** skill (API = single
+source of truth + self-serve docs). Offer it during update so existing backend projects
+can adopt it. Ask in the project's conversation language (from CLAUDE.md).
+
+**1. Detect a backend / HTTP API:**
+
+```bash
+ls go.mod requirements.txt pyproject.toml composer.json package.json 2>/dev/null
+grep -rlEi "fastapi|django|flask|gin|echo|fiber|huma|express|fastify|nestjs|laravel|symfony" \
+  --include=*.go --include=*.py --include=*.php --include=*.ts --include=*.js . 2>/dev/null | head -1
+```
+
+If NO backend → skip this whole step silently and go to Step 9.
+
+**2. Check whether it's already set up** (don't offer twice):
+- `.claude/skills/contract-first-api/` already exists, OR
+- an `/llms.txt` route / OpenAPI-generation already present in the code
+→ if either is true, report "contract-first already present — skipped" and go to Step 9.
+
+**3. Ask (backend found, not yet set up):**
+
+```
+This project has a backend. Want to adopt Contract-First API — make the API the single
+source of truth so humans AND AI agents can onboard from just (base_url, token)?
+(OpenAPI generated from code · one markdown handbook served everywhere · /llms.txt on-ramp
+· generated client types · docs↔guard drift test)
+
+  • no          — skip (add later with /claude-gen-add-skill contract-first-api)
+  • yes, install skill only  — wire the skill + routing now, build later on demand
+  • yes, build it now        — install AND run the full build in this session
+```
+
+STOP and wait for the answer.
+
+**4. If "install skill only" or "build it now" — install the skill:**
+
+```bash
+mkdir -p .claude/skills/contract-first-api
+cp -r .claude/skills/_library/contract-first-api/. .claude/skills/contract-first-api/
+```
+
+- Add a routing row to CLAUDE.md's skill table:
+  `| API endpoints, OpenAPI/docs, agent on-ramp | `contract-first-api` |`
+- If `.claude/hooks/skill-router.sh` exists, append `contract-first-api (API contract + docs)`
+  to its `{{SKILL_LIST}}` line (keep it one line).
+
+**5. If "build it now" — ask who does the work, then execute:**
+
+```
+Solo, or bring in sub-agents to go faster?
+
+  • solo        — I build it end to end (fine for small/medium APIs)
+  • sub-agents  — I fan out helpers in parallel, then review every change myself
+                  (recommended for a large API that's never had this — much faster)
+```
+
+Read the `contract-first-api` skill first (`.claude/skills/contract-first-api/SKILL.md`),
+then execute against the skill's Definition of Done:
+
+- **solo** — do all six hard rules yourself, verify the DoD checklist.
+- **sub-agents** — split the work by the skill's rules and fan out with the Agent tool
+  (one agent each, run concurrently): (a) OpenAPI-from-code wiring, (b) single-source
+  markdown handbook + backend/frontend serving, (c) `/llms.txt` + `/docs` UI on-ramp,
+  (d) generated consumer types, (e) role-matrix ↔ guard drift test.
+  **You are the reviewer, not a bystander** — read each agent's diff, verify it against the
+  skill's DoD, run the build/tests, and reject/redo anything that doesn't meet the bar
+  before accepting. Never merge unreviewed agent output. Spawn concurrent agents in one
+  message. Track the build as a task in `.ctx/active-tasks.md`.
+
+Report what was installed/built in Step 10.
+
 ### Step 9 — Cleanup
 
 ```bash
@@ -204,6 +277,7 @@ Framework updated.
   TODO.md    : {patched / already up to date}
   CLAUDE.md  : {patched / no changes needed}
   .gitignore : {patched / already up to date}
+  Contract-1st: {not offered (no backend) / declined / skill installed / built (solo|sub-agents)}
 
 Not touched: .ctx/, custom rules, active skills
 

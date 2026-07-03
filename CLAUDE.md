@@ -45,10 +45,11 @@ bootstrap/                   templates deployed to target projects
     └── stacks/              stack-specific rules (7 files)
 
 skills-library/              curated skills
-├── _index.json              skill → stack profile mapping (18 skills, 12 profiles)
+├── _index.json              skill → stack profile mapping (19 skills, 12 profiles)
 ├── _registry.json           external sources with pinned commit SHAs
 ├── _cache/                  external skills (13) — DO NOT EDIT, use /claude-gen-sync-skills
-├── debugging/               local self-authored skills (5)
+├── contract-first-api/      opt-in skill — API as source of truth (offered at init/update)
+├── debugging/               local self-authored skills (6)
 ├── docker/
 ├── git-advanced/
 ├── golang-testing/
