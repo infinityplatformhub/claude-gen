@@ -100,7 +100,7 @@ bootstrap/
 ├── CLAUDE.md.tmpl      system prompt template
 ├── TODO.md.tmpl        backlog template
 ├── rules/              universal + stack-specific rules
-└── hooks/              enforcement hooks (ctx-budget, report-guard, skill-router)
+└── hooks/              enforcement hooks (ctx-budget, skill-router)
 ```
 
 ## Documentation

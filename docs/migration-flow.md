@@ -164,9 +164,11 @@ curl -fsSL https://raw.githubusercontent.com/infinityplatformhub/claude-gen/main
 
 Deploy enforcement hooks จาก `.claude/bootstrap/hooks/` → `.claude/hooks/`:
 - `ctx-budget.sh` — ติดตั้งเสมอ
-- `report-guard.sh` — เฉพาะเมื่อ status-report enforcement = on (`{REPORT_GUARD}`)
 - `skill-router.sh` — เฉพาะเปิด auto-skill (replace `{{SKILL_LIST}}` ด้วย skills จริง)
 - merge hook wiring เข้า `.claude/settings.json` (ไม่ clobber ของเดิม) + validate
+
+ถ้าเลือกติดตั้ง codebase-memory (`{CODEBASE_MEMORY}` = global/project) — ติดตั้ง binary,
+wire MCP ตามระดับที่เลือก, index repo, เปิด `auto_index` (ข้ามถ้า = no; ล้มเหลวไม่ abort init)
 
 ### Phase 7 — CLAUDE.md
 

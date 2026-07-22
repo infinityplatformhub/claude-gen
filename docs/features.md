@@ -36,13 +36,11 @@ Create → In Progress → Before Commit → Done → Archived
 หลังทำงานเสร็จทุกครั้ง สรุปเป็นภาษาที่ตั้งค่าไว้:
 1. **Context** — ต้องทำอะไร / มีปัญหาอะไร
 2. **What was done** — วิธี, ผลลัพธ์, การตัดสินใจ
-3. **Next** — ขั้นตอนถัดไป (ต้องมีเสมอ) — ปิดท้ายด้วยบรรทัด `→ ...`
+3. **Next** — ขั้นตอนถัดไป (ต้องมีเสมอ)
 
-**report-guard hook เป็น opt-in** (เลือกตอน init ผ่าน `{REPORT_GUARD}` หรือสลับได้ตอน update):
-- **on** — ตรวจทุกครั้งที่จบ turn: ถ้าทำงานจริง (tool calls ≥ 2) แต่ไม่มีบรรทัด `→ ` ปิดท้าย
-  → hook block แล้วบังคับให้เขียน report ก่อนจบ
-- **off** — status report ยังเป็นกฎใน CLAUDE.md (ควรทำเสมอ) แต่ไม่มี hook คอย block
-  เลือกตัวนี้ถ้ารู้สึกว่ามันจุกจิกเวลางานเล็กๆ
+Status report เป็น **guideline ใน CLAUDE.md** ไม่มี hook บังคับ — เดิมมี `report-guard`
+(Stop hook) ที่ block ไม่ให้จบ turn จนกว่าจะเขียนบรรทัด `→ ` แต่**ถอดออกแล้ว** เพราะมันขัด
+จังหวะการใช้งานจริง (`/claude-gen-update` จะถอดออกให้อัตโนมัติในโปรเจกต์ที่ยังมีอยู่)
 
 ---
 
@@ -53,8 +51,10 @@ Create → In Progress → Before Commit → Done → Archived
 | Hook | Event | ทำอะไร |
 |------|-------|--------|
 | `ctx-budget.sh` | PostToolUse (Write/Edit) | เขียน `.ctx/*` หรือ `TODO.md` เกิน byte budget → block จนกว่าจะ trim |
-| `report-guard.sh` | Stop | จบ turn ที่ทำงานจริงโดยไม่มี status report (`→ ` บรรทัดท้าย) → block ให้เขียนก่อน (**opt-in** — เฉพาะเมื่อ `{REPORT_GUARD}` = on) |
 | `skill-router.sh` | UserPromptSubmit | ฉีดรายชื่อ skill (~60 tokens) เข้าทุก prompt (เฉพาะเปิด auto-skill) |
+
+> `report-guard.sh` (Stop) **ถูกถอดออกแล้ว** — มันบล็อกการจบ turn ทำให้ใช้งานติดขัด
+> status report ยังเป็นกฎใน CLAUDE.md แต่ไม่บังคับด้วย hook
 
 **Byte budgets** (เปลี่ยนจาก count-cap เป็น byte-cap เพราะต้นทุนจริงคือ tokens ไม่ใช่จำนวน entry):
 

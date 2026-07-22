@@ -45,7 +45,7 @@ Do NOT repeat the full plan on every phase. Just the heading + results.
 ## Phase 0 — Preferences (First Thing, Before ANY Discovery)
 
 Every decision the user can make upfront is asked HERE — never saved for later phases.
-Ask these 3 questions together in ONE message (this is the only English message allowed;
+Ask these 4 questions together in ONE message (this is the only English message allowed;
 include short Thai hints so it's readable either way):
 
 ```
@@ -61,14 +61,22 @@ include short Thai hints so it's readable either way):
      • yes — install a hook that surfaces the right skill on every prompt
      • no  — skills stay model-invoked only
 
-4. Status-report enforcement?  [default: on]
-     • on  — a Stop hook blocks ending a work turn until you write a status
-             report (the "→ next step" line). Hard guarantee, can nag on small tasks.
-     • off — status reports stay a CLAUDE.md guideline, not hook-enforced.
-             Pick this if the report-guard prompts feel noisy on tiny changes.
+4. Install codebase-memory (code knowledge graph)?  [default: no]
+     What it is: it indexes this repo into a queryable graph (tree-sitter AST, 158
+     languages) and serves it over MCP, so I can answer structural questions —
+     "who calls this function", "what breaks if I change it", "show the architecture" —
+     straight from the graph instead of grepping file by file. Native binary: no LLM,
+     no API key, no server; semantic search runs from embeddings baked into the binary.
+     Trade-off: ~258 MB binary on disk + a per-repo index (seconds to build).
+     • no      — skip it (you can add it later via /claude-gen-update)
+     • global  — install + wire MCP, its skill and hooks into ~/.claude, so EVERY
+                 project gets it. Note: this also configures other detected agents
+                 (e.g. OpenCode) and adds a grep→graph hook globally.
+     • project — install the binary, index THIS repo, register MCP for this project
+                 only. No global hooks/skill, other agents untouched.
 ```
 
-Store as {LANG}, {COMMIT_MODE}, {AUTO_SKILL}, {REPORT_GUARD}.
+Store as {LANG}, {COMMIT_MODE}, {AUTO_SKILL}, {CODEBASE_MEMORY}.
 
 ### Language lock — read carefully
 
@@ -346,12 +354,7 @@ mkdir -p .claude/hooks
 cp .claude/bootstrap/hooks/ctx-budget.sh   .claude/hooks/   # byte budgets on .ctx/ + TODO.md — ALWAYS
 ```
 
-`ctx-budget.sh` is always deployed. Deploy `report-guard.sh` ONLY if {REPORT_GUARD} = on:
-
-```bash
-# only when {REPORT_GUARD} = on
-cp .claude/bootstrap/hooks/report-guard.sh .claude/hooks/   # blocks ending a work turn without status report
-```
+`ctx-budget.sh` is always deployed.
 
 ```bash
 chmod +x .claude/hooks/*.sh
@@ -371,19 +374,49 @@ If {AUTO_SKILL} = yes, also deploy the skill router:
    If old framework hooks exist (e.g., an inline-echo UserPromptSubmit skill reminder),
    replace just those.
 2. Start from `.claude/bootstrap/hooks/settings.json.tmpl`. If {AUTO_SKILL} = no,
-   drop the `UserPromptSubmit` block. If {REPORT_GUARD} = off, drop the `Stop` block
-   (and don't deploy `report-guard.sh`).
+   drop the `UserPromptSubmit` block.
 3. Validate after writing:
    - `python3 -m json.tool .claude/settings.json > /dev/null` (valid JSON)
    - run each deployed hook with sample stdin and confirm exit 0:
      `printf '{}' | .claude/hooks/ctx-budget.sh`
-     and, only if {REPORT_GUARD} = on: `printf 'x' | .claude/hooks/report-guard.sh`
    - if {AUTO_SKILL} = yes: `printf '{}' | .claude/hooks/skill-router.sh` emits valid JSON
      with `.hookSpecificOutput.additionalContext` and NO remaining `{{SKILL_LIST}}` placeholder.
 4. `.claude/settings.json` + `.claude/hooks/` are committed (team-wide). Do NOT gitignore
    (only `settings.local.json` is ignored, per Phase 8).
 5. **Watcher caveat** — settings.json created mid-session isn't picked up until the config
    reloads. Note in Phase 9 that the `/exit` + reopen step activates the hooks.
+
+### codebase-memory — only if {CODEBASE_MEMORY} ≠ no
+
+Skip this section entirely when {CODEBASE_MEMORY} = no. Otherwise:
+
+1. **Already installed?** `command -v codebase-memory-mcp` — if present, skip the install
+   step and go straight to indexing.
+2. **Install the binary** (prefer npm; fall back to the official installer):
+   ```bash
+   npm install -g codebase-memory-mcp \
+     || curl -fsSL https://raw.githubusercontent.com/DeusData/codebase-memory-mcp/main/install.sh | bash
+   ```
+   If neither works (no npm, no network), report it and continue the init — this step is
+   optional and must NEVER abort the run.
+3. **Wire it, per the chosen depth:**
+   - {CODEBASE_MEMORY} = **global**:
+     ```bash
+     codebase-memory-mcp install -y     # MCP + skill + hooks into ~/.claude (all projects)
+     ```
+     Tell the user plainly that this also configured any other detected agents.
+   - {CODEBASE_MEMORY} = **project**:
+     ```bash
+     claude mcp add -s local codebase-memory-mcp -- "$(command -v codebase-memory-mcp)"
+     ```
+     No global hooks/skill; other agents untouched.
+4. **Index this repo** (both depths):
+   ```bash
+   codebase-memory-mcp cli index_repository "{\"repo_path\": \"$PWD\"}"
+   codebase-memory-mcp config set auto_index true   # re-index on session start
+   ```
+5. Verify: `codebase-memory-mcp cli list_projects` shows this repo with a node count > 0.
+   Note in Phase 9 that MCP tools appear only after `/exit` + reopen.
 
 ---
 
@@ -551,8 +584,8 @@ Print summary in {LANG}. Example in English:
   Stack       : {profile}
   Skills      : {count from Phase 3} + {count from Phase 4} custom
   Rules       : {count} + {preserved count} preserved
-  Hooks       : ctx-budget (token budgets){if REPORT_GUARD=on: + report-guard (status reports)}{if AUTO_SKILL=yes: + skill-router}
-  Report-guard: {on → status report enforced by hook | off → guideline only, not enforced}
+  Hooks       : ctx-budget (token budgets){if AUTO_SKILL=yes: + skill-router}
+  Code graph  : {global → codebase-memory installed for all projects (MCP+skill+hooks) | project → codebase-memory indexed for this repo only | no → not installed}
   CLAUDE      : {created / updated / merged}
   Skill-auto  : {on → routing table + skill-router hook | off → routing table only}
   Commit mode : {manual → asks first | auto → commits when gate passes}

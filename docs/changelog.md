@@ -1,5 +1,25 @@
 # Changelog
 
+## v3.2 — 2026-07-22
+
+- **`report-guard` hook REMOVED** — the Stop hook blocked ending a work turn until the reply
+  carried a `→ next step` line. In real use it interrupted the flow (it fires on any turn
+  with ≥2 tool calls, including trivial ones), so it is gone: script deleted, `Stop` wiring
+  dropped from `settings.json.tmpl`, and the `{REPORT_GUARD}` question removed from init
+  Phase 0. Status reports remain a **CLAUDE.md guideline** (what happened / what was done /
+  what's next) — the `→ ` marker rule is dropped too. `/claude-gen-update` Step 4d now
+  *removes* the hook from existing projects automatically (no prompt); it only touches the
+  `Stop` block that references `report-guard.sh`, never the user's own Stop hooks.
+- **New: optional `codebase-memory` code knowledge graph** — init Phase 0 question 4 offers
+  it with a plain-language explanation (indexes the repo into a tree-sitter graph served
+  over MCP; answers "who calls this / what breaks / show the architecture" from the graph
+  instead of grepping; native binary, no LLM or API key; ~258 MB + a per-repo index).
+  Three choices: `no` / `global` (MCP + skill + hooks in `~/.claude`, every project, also
+  configures other detected agents) / `project` (binary + index + project-scoped MCP only).
+  `/claude-gen-update` Step 4e asks the same question **only when it is not already
+  installed**; if it is, the repo index is just refreshed. Install failure never aborts
+  init/update — it is optional by design.
+
 ## v3.1 — 2026-07-03
 
 - **Opt-in `contract-first-api` skill** — API as single source of truth: OpenAPI generated

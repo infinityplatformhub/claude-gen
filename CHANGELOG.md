@@ -1,5 +1,17 @@
 # Changelog
 
+## v3.2 — 2026-07-22
+
+- **Removed `report-guard.sh` (Stop hook)** — it blocked ending a work turn without a
+  `→ next step` line and interrupted normal use. Script deleted, `Stop` wiring dropped from
+  the settings template, `{REPORT_GUARD}` init question removed. Status reports stay a
+  CLAUDE.md guideline (no `→ ` marker rule). `/claude-gen-update` removes it from existing
+  projects automatically, touching only the `Stop` block that points at `report-guard.sh`.
+- **Added optional `codebase-memory` integration** — init Phase 0 offers it (with an
+  explanation of what it is and its cost) as `no` / `global` / `project`; `/claude-gen-update`
+  asks only when it isn't installed yet, otherwise refreshes the repo index. Optional by
+  design: an install failure never aborts init/update.
+
 ## v3.0 — 2026-06-10
 
 Theme: rules enforced by hooks, not agent memory. Token budgets on everything auto-imported.

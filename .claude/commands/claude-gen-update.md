@@ -42,9 +42,6 @@ cp -r /tmp/claude-gen-update/bootstrap/. .claude/bootstrap/
 ```bash
 mkdir -p .claude/hooks
 cp .claude/bootstrap/hooks/ctx-budget.sh   .claude/hooks/   # always
-# report-guard is now a preference — refresh the script ONLY if already deployed;
-# do NOT newly add it here (the toggle in Step 4d handles enable/disable):
-[ -f .claude/hooks/report-guard.sh ] && cp .claude/bootstrap/hooks/report-guard.sh .claude/hooks/
 chmod +x .claude/hooks/*.sh
 ```
 
@@ -58,36 +55,60 @@ chmod +x .claude/hooks/*.sh
 **settings.json** — read first, MERGE with `.claude/bootstrap/hooks/settings.json.tmpl`:
 - Add the `PostToolUse` (ctx-budget) wiring if missing
 - Add `UserPromptSubmit` (skill-router) wiring only if `.claude/hooks/skill-router.sh` exists
-- Do NOT touch the `Stop` (report-guard) wiring here — Step 4d owns it. Leave the user's
-  current state as-is until then.
 - Never remove or clobber the user's own hooks/keys
 - Validate: `python3 -m json.tool .claude/settings.json > /dev/null`
 
-### Step 4d — Report-guard toggle (ask once)
+### Step 4d — Remove report-guard (migration, no prompt)
 
-The status-report Stop hook is now opt-in. Detect the current state, then offer to
-change it (ask in the project's conversation language):
+The status-report **Stop** hook has been REMOVED from the framework: it blocked ending a
+work turn, which interrupted normal use. Status reports stay a CLAUDE.md guideline. Clean
+it out of projects that still carry it — this is a straight removal, do NOT ask:
 
-- **Currently ON**  = `.claude/hooks/report-guard.sh` exists AND settings.json has a
-  `Stop` block pointing at it.
-- **Currently OFF** = otherwise.
-
-Ask:
-
-```
-Status-report enforcement is currently {ON / OFF}.
-  • keep — leave it as is
-  • on   — a Stop hook blocks ending a work turn until you write the "→ next step" report
-  • off  — status reports become a guideline only (no hook nagging on small tasks)
+```bash
+# 1. drop the script if present
+rm -f .claude/hooks/report-guard.sh
 ```
 
-STOP and wait. Apply the answer:
-- **turn on**: `cp .claude/bootstrap/hooks/report-guard.sh .claude/hooks/ && chmod +x .claude/hooks/report-guard.sh`,
-  then add the `Stop` block from `settings.json.tmpl` (merge, keep other hooks).
-- **turn off**: remove the `Stop` block that points at `report-guard.sh` from settings.json
-  (leave the script file; harmless unwired). Keep other hooks intact.
-- **keep**: no change.
-Re-validate settings.json is valid JSON after any change.
+2. Remove the `Stop` block that points at `report-guard.sh` from `.claude/settings.json`
+   (merge-safe: delete only that block; if `Stop` then has no hooks left, drop the `Stop`
+   key entirely). **Never touch Stop hooks the user added themselves** — only the one
+   whose command references `report-guard.sh`.
+3. Re-validate: `python3 -m json.tool .claude/settings.json > /dev/null`.
+
+Report it in the summary as `report-guard: removed` (or `not present`).
+
+### Step 4e — codebase-memory (ask ONLY if not installed)
+
+Optional code knowledge graph. **Detect first — never re-ask if it is already set up:**
+
+```bash
+command -v codebase-memory-mcp && codebase-memory-mcp cli list_projects 2>/dev/null
+```
+
+- **Already installed** → skip the question. Just refresh this repo's index:
+  `codebase-memory-mcp cli index_repository "{\"repo_path\": \"$PWD\"}"`, and report
+  `codebase-memory: already installed (index refreshed)`.
+- **Not installed** → ask once, in the project's conversation language:
+
+```
+Install codebase-memory (code knowledge graph)?  [default: no]
+  What it is: indexes this repo into a queryable graph (tree-sitter AST, 158 languages)
+  served over MCP, so structural questions — "who calls this", "what breaks if I change
+  it", "show the architecture" — are answered from the graph instead of grepping file by
+  file. Native binary: no LLM, no API key, no server. Cost: ~258 MB binary + a per-repo
+  index (seconds).
+  • no      — skip (ask me again on a later update)
+  • global  — MCP + skill + hooks into ~/.claude, available in EVERY project
+              (also configures other detected agents, e.g. OpenCode)
+  • project — binary + index for THIS repo only, MCP registered project-scoped
+```
+
+STOP and wait. Then apply exactly as in the init agent's "codebase-memory" section:
+install via `npm install -g codebase-memory-mcp` (fallback: official install.sh) →
+`codebase-memory-mcp install -y` for **global** or `claude mcp add -s local` for
+**project** → `cli index_repository` + `config set auto_index true` → verify with
+`cli list_projects`. If the install fails (no npm/network), report it and continue —
+this step is optional and must NEVER abort the update.
 
 ### Step 4b — Patch TODO.md
 
@@ -160,12 +181,12 @@ For each item: read the file, check if the issue exists, fix if needed, report w
    sections don't exist, copy them from `.claude/bootstrap/CLAUDE.md.tmpl` (substitute the
    project's task prefix for `{{TASK_PREFIX}}`). These pair with the new enforcement hooks.
 
-8. **Status report `→` marker** — the Status Report section should ask reports to end with a
-   final line starting with `→ `. Copy the wording from `.claude/bootstrap/CLAUDE.md.tmpl`
-   if missing. The wording is now conditional ("if the report-guard hook is installed…") so
-   it reads correctly whether the hook is on or off — if the file still has the old
-   hard-enforced phrasing ("The `report-guard` hook blocks ending a work turn without it"),
-   replace it with the conditional wording from the template.
+8. **Status report — strip the `→` marker rule** — the Status Report section is now a plain
+   guideline (what happened / what was done / what's next). Delete any paragraph demanding a
+   final line starting with `→ `, and any sentence referencing the `report-guard` hook
+   (both the hard-enforced phrasing and the conditional "if the report-guard hook is
+   installed…" variant). Match the wording in `.claude/bootstrap/CLAUDE.md.tmpl`. Keep the
+   section itself — only the arrow rule and hook references go.
 
 9. **Version marker** — ensure `<!-- claude-gen v3 -->` exists near the top (line 2-3).
    Add or bump it if older/missing.
@@ -302,8 +323,9 @@ Framework updated.
   Backup     : .claude-backup/{timestamp}/
   Commands   : updated
   Agents     : updated
-  Hooks      : {deployed / refreshed} (ctx-budget{, report-guard}{, skill-router})
-  Report-guard: {kept on / kept off / turned on / turned off}
+  Hooks      : {deployed / refreshed} (ctx-budget{, skill-router})
+  report-guard: {removed / not present}
+  Code graph : {installed global / installed for this project / index refreshed / declined / not offered}
   Cleanup    : {n files compressed, X KB → Y KB / all within budget}
   Skills lib : {count} cached + {count} local
   Bootstrap  : updated
